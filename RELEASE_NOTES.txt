@@ -1,0 +1,152 @@
+FORGE v1.0.0
+RELEASE NOTES
+==============
+
+
+RELEASE INFORMATION
+-------------------
+
+Application:
+
+    FORGE
+
+Version:
+
+    1.0.0
+
+Release Type:
+
+    Initial Stable Release
+
+
+OVERVIEW
+--------
+
+FORGE is a configurable candidate generation application designed
+around controlled generation workflows.
+
+This release introduces the complete generation engine, project state
+management, documentation system, and multiple traversal strategies.
+
+
+MAJOR FEATURES
+--------------
+
+Generation Modes:
+
+- Password generation
+- Email generation
+- Exhaustive generation
+
+
+Generation Controls:
+
+- Required length filtering
+- Minimum and maximum length ranges
+- Candidate generation limits
+- Duplicate prevention
+- Existing wordlist awareness
+
+
+Project System:
+
+- Save generation state
+- Resume interrupted projects
+- Continue previous operations
+
+
+Traversal Engine:
+
+Included strategies:
+
+1. Sequential
+
+   Generates candidates in a predictable order.
+
+
+2. Priority
+
+   Uses scoring logic to prioritize candidates.
+
+
+3. Rotation
+
+   Explores rotated and structurally related candidates.
+
+
+4. Alphabetical
+
+   Sorts the alphabet before traversal.
+
+
+5. Random
+
+   Generates candidates in randomized order.
+
+
+DOCUMENTATION
+-------------
+
+Included documentation:
+
+README.txt
+
+Quick introduction and usage overview.
+
+
+USER_MANUAL.txt
+
+Complete explanation of:
+
+- Modes
+- Settings
+- Examples
+- Terminology
+- Traversal strategies
+
+
+TESTING_GUIDE.txt
+
+Instructions for testers.
+
+
+SECURITY AND RESPONSIBLE USE
+----------------------------
+
+FORGE should only be used in environments where the user has proper
+authorization.
+
+Users are responsible for ensuring their activities comply with
+applicable laws and policies.
+
+
+KNOWN LIMITATIONS
+-----------------
+
+- Large candidate spaces require significant processing resources.
+- Generation speed depends on alphabet size and requested length.
+- Very large output files require sufficient storage.
+
+
+FUTURE DEVELOPMENT
+------------------
+
+Possible future improvements:
+
+- Additional export formats
+- Improved interface options
+- Additional generation strategies
+- Performance optimization
+
+
+VERSION HISTORY
+---------------
+
+v1.0.0
+
+Initial stable release.
+
+--------------------------------------------------
+
+FORGE
+Copyright © 2026 LORD VINIE.

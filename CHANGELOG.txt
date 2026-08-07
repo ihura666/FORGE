@@ -1,0 +1,57 @@
+FORGE CHANGELOG
+===============
+
+Version 1.0.0
+Release Date: 2026-08-07
+
+INITIAL STABLE RELEASE
+----------------------
+
+FORGE v1.0.0 is the initial stable release.
+
+CORE FEATURES
+-------------
+
+- Password candidate generation
+- Email candidate generation
+- Exhaustive candidate generation
+- Required candidate lengths
+- Minimum and maximum exhaustive lengths
+- Maximum new-candidate limits
+- Duplicate prevention
+- Existing-wordlist awareness
+- Project state saving
+- Project continuation
+- Repeated-word generation
+- Repeated-pattern generation
+- Number insertion
+- Configurable traversal strategies
+
+TRAVERSAL ENGINE
+----------------
+
+Available traversal strategies:
+
+1. Sequential
+2. Priority
+3. Rotation
+4. Alphabetical
+5. Random
+
+DOCUMENTATION
+-------------
+
+Included:
+
+- README.txt
+- USER_MANUAL.txt
+- LICENSE.txt
+- COPYRIGHT.txt
+- CHANGELOG.txt
+
+RELEASE STATUS
+--------------
+
+Initial stable release.
+
+FORGE v1.0.0

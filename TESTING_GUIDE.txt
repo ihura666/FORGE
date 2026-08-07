@@ -1,0 +1,249 @@
+FORGE v1.0.0
+TESTING GUIDE
+==============
+
+
+1. ABOUT THIS TEST
+------------------
+
+Thank you for testing FORGE v1.0.0.
+
+This test verifies:
+
+- Program startup
+- Menu navigation
+- Documentation access
+- Password generation
+- Exhaustive generation
+- Candidate limits
+- Duplicate prevention
+- Project continuation
+- Traversal strategies
+
+
+2. INSTALLATION
+---------------
+
+Extract:
+
+    FORGE-v1.0.0-linux-x86_64.zip
+
+Open the extracted folder.
+
+Make the program executable if required:
+
+    chmod +x FORGE
+
+
+3. FIRST RUN
+------------
+
+Start:
+
+    ./FORGE
+
+
+The main menu should appear:
+
+    passwords
+    continue
+    emails
+    user_manual
+    exhaustive
+    quit
+
+
+4. DOCUMENTATION TEST
+--------------------
+
+Select:
+
+    user_manual
+
+
+Verify that the manual opens correctly.
+
+Check that it explains:
+
+- Generation modes
+- Traversal
+- Candidate limits
+- Project state
+- Examples
+
+
+5. PASSWORD MODE TEST
+---------------------
+
+Select:
+
+    passwords
+
+
+Use small test values.
+
+Example:
+
+Keywords:
+
+    forge,test
+
+
+Numbers:
+
+    1,2
+
+
+Symbols:
+
+    @
+
+
+Required length:
+
+    8
+
+
+Maximum candidates:
+
+    100
+
+
+Verify:
+
+- Candidates are generated
+- Output file is created
+- Candidate count is displayed
+
+
+6. EXHAUSTIVE MODE TEST
+-----------------------
+
+Select:
+
+    exhaustive
+
+
+Example:
+
+Alphabet:
+
+    a,b,c
+
+
+Minimum length:
+
+    2
+
+
+Maximum length:
+
+    3
+
+
+Include numbers:
+
+    n
+
+
+Include symbols:
+
+    n
+
+
+Maximum candidates:
+
+    50
+
+
+Test each traversal:
+
+1. Sequential
+2. Priority
+3. Rotation
+4. Alphabetical
+5. Random
+
+
+Verify that each mode runs without errors.
+
+
+7. CONTINUE TEST
+----------------
+
+Generate a wordlist.
+
+Close FORGE.
+
+Run FORGE again.
+
+Select:
+
+    continue
+
+
+Verify:
+
+- Previous project is detected
+- Generation resumes correctly
+- Duplicate candidates are avoided
+
+
+8. ERROR REPORTING
+------------------
+
+If an error occurs, provide:
+
+- Operating system
+- FORGE version
+- Selected menu option
+- Inputs used
+- Complete error message
+
+
+Example:
+
+Mode:
+
+    exhaustive
+
+Traversal:
+
+    priority
+
+Alphabet:
+
+    a,b,c
+
+Error:
+
+    paste complete traceback here
+
+
+9. EXPECTED RESULT
+------------------
+
+A successful test should confirm:
+
+[ ] Program launches
+
+[ ] Menu works
+
+[ ] User manual opens
+
+[ ] Password mode works
+
+[ ] Exhaustive mode works
+
+[ ] Traversal modes work
+
+[ ] Candidate limits work
+
+[ ] Continue mode works
+
+[ ] Output files are created
+
+
+FORGE v1.0.0
+Initial Release
+

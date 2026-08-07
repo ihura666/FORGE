@@ -1,0 +1,13 @@
+FORGE v1.0.0
+============
+
+Copyright © 2026 LORD VINIE.
+All rights reserved.
+
+FORGE, including its executable, documentation, and associated
+release materials, is protected by applicable copyright laws.
+
+The copyright notice must remain intact in authorized copies and
+distributions.
+
+Unauthorized reproduction or redistribution is prohibited.
