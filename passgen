@@ -245,22 +245,26 @@ def yield_variants(
     symbols: list[str],
     required_length: int,
 ):
+    """
+    Generate Smart-mode variants with exactly required_length characters.
 
-    seen = set()
-    generated = [0]
+    Smart mode prefers:
+    1. The original word when it already has the required length.
+    2. Exact-length windows from longer words.
+    3. Capitalization variants.
+    4. Number and symbol combinations that fit exactly.
+    """
 
-    if not word:
+    if not word or required_length < 1:
         return
 
-    forms = {
-        word,
-        word.lower(),
-        word.upper(),
-        word.capitalize(),
-        word.title(),
-    }
+    seen = set()
 
-    def emit(candidate):
+    def emit(candidate: str):
+        candidate = candidate.strip()
+
+        if not candidate:
+            return
 
         if len(candidate) != required_length:
             return
@@ -269,64 +273,160 @@ def yield_variants(
             return
 
         seen.add(candidate)
-
         yield candidate
+
+    # -------------------------------------------------
+    # Base forms
+    # -------------------------------------------------
+
+    forms = [
+        word,
+        word.lower(),
+        word.upper(),
+        word.capitalize(),
+        word.title(),
+    ]
+
+    # -------------------------------------------------
+    # Exact-length base forms
+    # -------------------------------------------------
 
     for form in forms:
 
-        current_length = len(form)
-        remaining = required_length - current_length
+        if len(form) == required_length:
 
-        # If already too long, skip immediately
-        if remaining < 0:
+            yield from emit(form)
+
+        elif len(form) > required_length:
+
+            # Sliding windows through the keyword.
+            #
+            # Example:
+            # qwertyuiop
+            # length = 5
+            #
+            # qwert
+            # werty
+            # erty u
+            # ...
+
+            for start in range(
+                len(form) - required_length + 1
+            ):
+
+                candidate = form[
+                    start:start + required_length
+                ]
+
+                yield from emit(candidate)
+
+    # -------------------------------------------------
+    # Number combinations
+    # -------------------------------------------------
+
+    for form in forms:
+
+        if len(form) > required_length:
             continue
 
-        # Exact number filling
-        # Exact number filling
-    if numbers and remaining > 0:
-        for code in generate_numeric_sequences(
-            numbers,
-            remaining
-        ):
-            yield from emit(form + code)
-            yield from emit(code + form)
+        remaining = required_length - len(form)
 
-            for sym in symbols:
-                yield from emit(
-                    form + sym + code
-                )
+        if remaining <= 0:
+            continue
 
-                yield from emit(
-                    code + sym + form
-                )
+        if numbers:
 
+            # Numbers before the word
+            for number in numbers:
 
-            # Exact symbol filling
-            if symbols and remaining > 0:
+                if len(number) == remaining:
 
-                if remaining == 1:
-                    for sym in symbols:
-                        yield from emit(
-        form + sym
-    )
-                        yield from emit(
-                            sym + form
-                        )
-
-        # Exact mixed filling
-        if numbers and symbols:
-
-            for sym in symbols:
-                for code in generate_numeric_sequences(
-                    numbers,
-                    max(0, remaining - 1)
-                ):
                     yield from emit(
-                        form + sym + code
+                        number + form
                     )
 
-        # If form itself matches
-        yield from emit(form)
+            # Numbers after the word
+            for number in numbers:
+
+                if len(number) == remaining:
+
+                    yield from emit(
+                        form + number
+                    )
+
+        # -------------------------------------------------
+        # Symbol + number combinations
+        # -------------------------------------------------
+
+        if symbols and numbers and remaining >= 2:
+
+            for symbol in symbols:
+
+                for number in numbers:
+
+                    if len(symbol) + len(number) != remaining:
+                        continue
+
+                    yield from emit(
+                        form + symbol + number
+                    )
+
+                    yield from emit(
+                        number + symbol + form
+                    )
+
+                    yield from emit(
+                        form + number + symbol
+                    )
+
+                    yield from emit(
+                        symbol + number + form
+                    )
+
+        # -------------------------------------------------
+        # Symbol combinations
+        # -------------------------------------------------
+
+        if symbols:
+
+            for symbol in symbols:
+
+                if len(symbol) == remaining:
+
+                    yield from emit(
+                        form + symbol
+                    )
+
+                    yield from emit(
+                        symbol + form
+                    )
+
+    # -------------------------------------------------
+    # Exact-length combinations made from the keyword
+    # -------------------------------------------------
+
+    # This is deliberately limited to combinations that
+    # preserve the original character order.
+
+    if len(word) > required_length:
+
+        for start in range(
+            len(word) - required_length + 1
+        ):
+
+            fragment = word[
+                start:start + required_length
+            ]
+
+            yield from emit(fragment)
+
+            yield from emit(
+                fragment.capitalize()
+            )
+
+            yield from emit(
+                fragment.upper()
+            )
 
     return
 
@@ -443,7 +543,7 @@ def iter_candidates(
 
                         "keyword": keyword_index,
 
-                        "permutation": perm_index,
+                        "permutation": 0
 
                     }
 
