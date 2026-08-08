@@ -1,0 +1,34 @@
+{
+  "job_id": "test-001",
+  "config": {
+    "mode": "exhaustive",
+    "traversal": "sequential",
+    "required_length": 2,
+    "max_candidates": 5,
+    "keywords": [
+      "ab"
+    ],
+    "numbers": [],
+    "symbols": []
+  },
+  "output_path": "/tmp/pytest-of-lord/pytest-18/test_job_pipeline0/output.txt",
+  "checkpoint_path": "/tmp/pytest-of-lord/pytest-18/test_job_pipeline0/output.state",
+  "mode": "exhaustive",
+  "traversal": "sequential",
+  "required_length": 2,
+  "max_candidates": 5,
+  "keywords": [
+    "ab"
+  ],
+  "numbers": [],
+  "symbols": [],
+  "output_file": "output.txt",
+  "status": "failed",
+  "position": 0,
+  "generated": 0,
+  "current_index": 0,
+  "total_generated": 0,
+  "created_at": 1786175492.0445905,
+  "updated_at": 1786175492.045696,
+  "metadata": {}
+}

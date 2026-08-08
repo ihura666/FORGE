@@ -1,0 +1,20 @@
+{
+  "checkpoint_path": "/tmp/pytest-of-lord/pytest-40/test_job_pipeline0/output.state",
+  "created_at": 1786185463.142217,
+  "generated": 5,
+  "job_id": "test-001",
+  "keywords": [
+    "abc"
+  ],
+  "max_candidates": 5,
+  "metadata": {},
+  "mode": "exhaustive",
+  "numbers": [],
+  "output_path": "/tmp/pytest-of-lord/pytest-40/test_job_pipeline0/output.txt",
+  "position": 5,
+  "required_length": 2,
+  "status": "completed",
+  "symbols": [],
+  "traversal": "sequential",
+  "updated_at": 1786185463.142793
+}
