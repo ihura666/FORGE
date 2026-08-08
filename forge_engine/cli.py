@@ -12,7 +12,7 @@ from forge_engine.core.config import (
 from forge_engine.core.factory import create_engine
 
 
-VERSION = "1.0.0"
+VERSION = "1.0.3"
 
 
 def build_parser() -> argparse.ArgumentParser:
