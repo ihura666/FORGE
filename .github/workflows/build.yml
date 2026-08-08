@@ -16,6 +16,11 @@ permissions:
   contents: write
 
 jobs:
+
+  # ============================================================
+  # TESTS
+  # ============================================================
+
   test:
     name: Tests
     runs-on: ubuntu-latest
@@ -38,6 +43,11 @@ jobs:
         run: |
           python -m pytest -q
 
+
+  # ============================================================
+  # LINUX BUILD
+  # ============================================================
+
   linux:
     name: Linux x86-64
     needs: test
@@ -52,36 +62,67 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
+      - name: Install build tools
         run: |
           python -m pip install --upgrade pip
           python -m pip install pyinstaller
 
-      - name: Build
+      - name: Build FORGE
         run: |
           pyinstaller \
             --onefile \
             --name FORGE \
             forge_engine/cli.py
 
+      - name: Verify executable
+        run: |
+          chmod +x dist/FORGE
+          ./dist/FORGE --version
+
       - name: Package
         run: |
-          mkdir -p release/FORGE-linux-x86_64
-          cp dist/FORGE release/FORGE-linux-x86_64/FORGE
+          set -e
 
-          cd release/FORGE-linux-x86_64
+          mkdir -p release/FORGE-1.0.0
+
+          cp dist/FORGE \
+            release/FORGE-1.0.0/FORGE
+
+          chmod +x \
+            release/FORGE-1.0.0/FORGE
+
+          cd release/FORGE-1.0.0
 
           sha256sum FORGE > FORGE.sha256
 
-          tar -czf ../FORGE-linux-x86_64.tar.gz FORGE FORGE.sha256
+          cd ..
 
-      - name: Upload artifact
+          tar -czf \
+            FORGE-linux-x86_64.tar.gz \
+            FORGE-1.0.0
+
+      - name: Generate archive checksum
+        run: |
+          cd release
+
+          sha256sum \
+            FORGE-linux-x86_64.tar.gz \
+            > FORGE-linux-x86_64.tar.gz.sha256
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: FORGE-linux-x86_64
           path: |
-            release/FORGE-linux-x86_64/FORGE-linux-x86_64.tar.gz
-            release/FORGE-linux-x86_64/FORGE.sha256
+            release/FORGE-linux-x86_64.tar.gz
+            release/FORGE-linux-x86_64.tar.gz.sha256
+            release/FORGE-1.0.0/FORGE
+            release/FORGE-1.0.0/FORGE.sha256
+
+
+  # ============================================================
+  # WINDOWS BUILD
+  # ============================================================
 
   windows:
     name: Windows x86-64
@@ -92,19 +133,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
         run: |
           python -m pip install --upgrade pip
           python -m pip install pyinstaller
 
-      - name: Build
+      - name: Build FORGE
         run: |
           pyinstaller `
             --onefile `
             --name FORGE `
             forge_engine/cli.py
 
-      - name: Verify
+      - name: Verify executable
         shell: powershell
         run: |
           .\dist\FORGE.exe --version
@@ -112,53 +158,89 @@ jobs:
       - name: Package
         shell: powershell
         run: |
-          New-Item -ItemType Directory -Force release
-          Copy-Item dist\FORGE.exe release\FORGE.exe
+          New-Item `
+            -ItemType Directory `
+            -Force `
+            -Path release
+
+          Copy-Item `
+            dist\FORGE.exe `
+            release\FORGE.exe
+
           Compress-Archive `
             -Path release\FORGE.exe `
             -DestinationPath release\FORGE-windows-x86_64.zip
+
+      - name: Generate checksum
+        shell: powershell
+        run: |
+          $hash = (Get-FileHash `
+            release\FORGE-windows-x86_64.zip `
+            -Algorithm SHA256).Hash.ToLower()
+
+          "$hash  FORGE-windows-x86_64.zip" |
+            Out-File `
+              -Encoding ascii `
+              release\FORGE-windows-x86_64.zip.sha256
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: FORGE-windows-x86_64
-          path: release/FORGE-windows-x86_64.zip
+          path: |
+            release/FORGE-windows-x86_64.zip
+            release/FORGE-windows-x86_64.zip.sha256
+
+
+  # ============================================================
+  # RELEASE
+  # ============================================================
 
   release:
     name: GitHub Release
+
     if: startsWith(github.ref, 'refs/tags/v')
+
     needs:
       - linux
       - windows
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download Linux artifact
+
+      - name: Download Linux artifacts
         uses: actions/download-artifact@v4
         with:
           name: FORGE-linux-x86_64
           path: release/linux
 
-      - name: Download Windows artifact
+      - name: Download Windows artifacts
         uses: actions/download-artifact@v4
         with:
           name: FORGE-windows-x86_64
           path: release/windows
 
-      - name: Generate release checksums
-        shell: bash
+      - name: Prepare release directory
         run: |
+          set -e
+
           mkdir -p release/final
 
           cp release/linux/FORGE-linux-x86_64.tar.gz \
-            release/final/
+            release/final/FORGE-linux-x86_64.tar.gz
 
-          cp release/linux/FORGE.sha256 \
-            release/final/FORGE-linux-x86_64.sha256
+          cp release/linux/FORGE-linux-x86_64.tar.gz.sha256 \
+            release/final/FORGE-linux-x86_64.tar.gz.sha256
 
           cp release/windows/FORGE-windows-x86_64.zip \
-            release/final/
+            release/final/FORGE-windows-x86_64.zip
 
+          cp release/windows/FORGE-windows-x86_64.zip.sha256 \
+            release/final/FORGE-windows-x86_64.zip.sha256
+
+      - name: Generate combined SHA256SUMS
+        run: |
           cd release/final
 
           sha256sum \
@@ -166,12 +248,25 @@ jobs:
             FORGE-windows-x86_64.zip \
             > SHA256SUMS.txt
 
+      - name: Verify release artifacts
+        run: |
+          set -e
+
+          test -f release/final/FORGE-linux-x86_64.tar.gz
+          test -f release/final/FORGE-windows-x86_64.zip
+          test -f release/final/FORGE-linux-x86_64.tar.gz.sha256
+          test -f release/final/FORGE-windows-x86_64.zip.sha256
+          test -f release/final/SHA256SUMS.txt
+
+          echo "All release artifacts verified."
+
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
           files: |
             release/final/FORGE-linux-x86_64.tar.gz
+            release/final/FORGE-linux-x86_64.tar.gz.sha256
             release/final/FORGE-windows-x86_64.zip
-            release/final/FORGE-linux-x86_64.sha256
+            release/final/FORGE-windows-x86_64.zip.sha256
             release/final/SHA256SUMS.txt
