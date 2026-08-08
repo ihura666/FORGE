@@ -1,0 +1,25 @@
+FORGE Release Manifest
+======================
+
+Product: FORGE
+Version: 1.0.0
+Platform: Linux x86-64
+
+Components:
+- FORGE executable
+- Python source package
+- Tests
+- Documentation
+- License
+
+Validation:
+- Automated tests: 19/19
+- CLI version: 1.0.0
+- Binary type: ELF 64-bit x86-64
+- SHA-256: see FORGE.sha256
+
+Release status:
+- Core engine: stable
+- CLI: operational
+- Job system: operational
+- Binary: operational
