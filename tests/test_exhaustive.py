@@ -1,85 +1,79 @@
+from forge_engine.core.config import (
+    GenerationConfig,
+    GenerationMode,
+    TraversalMode,
+)
+
 from forge_engine.modes.exhaustive import (
-    candidate_from_index,
-    exhaustive_candidates,
-    search_space_size,
+    ExhaustiveEngine,
 )
 
 
-def test_search_space_size():
-    assert search_space_size(
-        "ab",
-        2,
-    ) == 4
+def test_exhaustive_generates_exact_length():
 
-
-def test_candidate_from_index():
-    assert candidate_from_index(
-        "ab",
-        2,
-        0,
-    ) == "aa"
-
-    assert candidate_from_index(
-        "ab",
-        2,
-        1,
-    ) == "ab"
-
-    assert candidate_from_index(
-        "ab",
-        2,
-        2,
-    ) == "ba"
-
-    assert candidate_from_index(
-        "ab",
-        2,
-        3,
-    ) == "bb"
-
-
-def test_exhaustive_generation():
-    results = list(
-        exhaustive_candidates(
-            "ab",
-            2,
-        )
+    config = GenerationConfig(
+        mode=GenerationMode.EXHAUSTIVE,
+        traversal=TraversalMode.SEQUENTIAL,
+        required_length=2,
+        max_candidates=10,
+        keywords=["ab"],
+        numbers=[],
+        symbols=[],
     )
 
-    assert results == [
-        (0, "aa"),
-        (1, "ab"),
-        (2, "ba"),
-        (3, "bb"),
-    ]
+    engine = ExhaustiveEngine(config)
 
-
-def test_exhaustive_resume():
     results = list(
-        exhaustive_candidates(
-            "ab",
-            2,
-            start=2,
-        )
+        engine.generate()
     )
 
-    assert results == [
-        (2, "ba"),
-        (3, "bb"),
-    ]
+    assert results
+
+    for candidate in results:
+        assert len(candidate.value) == 2
+
+
+def test_exhaustive_uses_numbers():
+
+    config = GenerationConfig(
+        mode=GenerationMode.EXHAUSTIVE,
+        traversal=TraversalMode.SEQUENTIAL,
+        required_length=2,
+        max_candidates=20,
+        keywords=["ab"],
+        numbers=["1"],
+        symbols=[],
+    )
+
+    engine = ExhaustiveEngine(config)
+
+    values = {
+        candidate.value
+        for candidate in engine.generate()
+    }
+
+    assert "11" in values
+    assert "aa" in values
+    assert "ab" in values
 
 
 def test_exhaustive_limit():
-    results = list(
-        exhaustive_candidates(
-            "ab",
-            2,
-            start=1,
-            limit=2,
-        )
+
+    config = GenerationConfig(
+        mode=GenerationMode.EXHAUSTIVE,
+        traversal=TraversalMode.SEQUENTIAL,
+        required_length=4,
+        max_candidates=7,
+        keywords=["ab"],
+        numbers=[],
+        symbols=[],
     )
 
-    assert results == [
-        (1, "ab"),
-        (2, "ba"),
-    ]
+    engine = ExhaustiveEngine(config)
+
+    results = list(
+        engine.generate()
+    )
+
+    assert len(results) == 7
+

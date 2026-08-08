@@ -1,129 +1,102 @@
-from typing import Iterator
+from collections.abc import Iterator
+from itertools import product
+
+from forge_engine.core.engine import GenerationEngine
+from forge_engine.core.result import Candidate
 
 
-def search_space_size(
-    alphabet: str,
-    length: int,
-) -> int:
-    """
-    Return the total number of candidates in the search space.
-    """
+class ExhaustiveEngine(GenerationEngine):
 
-    if not alphabet:
-        raise ValueError("alphabet cannot be empty")
+    def generate(
+        self,
+        start: int = 0,
+    ) -> Iterator[Candidate]:
 
-    if length < 1:
-        raise ValueError(
-            "length must be greater than zero"
-        )
+        position = 0
 
-    return len(alphabet) ** length
+        alphabet = self._alphabet()
 
-
-def candidate_from_index(
-    alphabet: str,
-    length: int,
-    index: int,
-) -> str:
-    """
-    Convert a numeric position directly into a candidate.
-
-    This allows exhaustive jobs to resume without replaying
-    candidates that were already processed.
-    """
-
-    if not alphabet:
-        raise ValueError("alphabet cannot be empty")
-
-    if length < 1:
-        raise ValueError(
-            "length must be greater than zero"
-        )
-
-    if index < 0:
-        raise ValueError(
-            "index cannot be negative"
-        )
-
-    total = search_space_size(
-        alphabet,
-        length,
-    )
-
-    if index >= total:
-        raise IndexError(
-            "index is outside the search space"
-        )
-
-    base = len(alphabet)
-
-    result = [""] * length
-
-    remaining = index
-
-    for position in range(
-        length - 1,
-        -1,
-        -1,
-    ):
-        result[position] = alphabet[
-            remaining % base
-        ]
-
-        remaining //= base
-
-    return "".join(result)
-
-
-def exhaustive_candidates(
-    alphabet: str,
-    length: int,
-    start: int = 0,
-    limit: int | None = None,
-) -> Iterator[tuple[int, str]]:
-    """
-    Generate candidates from a deterministic search space.
-
-    start:
-        First position to process.
-
-    limit:
-        Maximum number of positions to yield.
-    """
-
-    total = search_space_size(
-        alphabet,
-        length,
-    )
-
-    if start < 0:
-        raise ValueError(
-            "start cannot be negative"
-        )
-
-    if start >= total:
-        return
-
-    end = total
-
-    if limit is not None:
-        if limit < 1:
+        if not alphabet:
             return
 
-        end = min(
-            start + limit,
-            total,
-        )
+        length = self.config.required_length
 
-    for index in range(
-        start,
-        end,
-    ):
-        yield (
-            index,
-            candidate_from_index(
-                alphabet,
-                length,
-                index,
-            ),
+        if length < 1:
+            return
+
+        for symbols in product(
+            alphabet,
+            repeat=length,
+        ):
+
+            candidate = "".join(symbols)
+
+            if position < start:
+                position += 1
+                continue
+
+            yield Candidate(
+                value=candidate,
+                source="exhaustive",
+                index=position,
+            )
+
+            position += 1
+
+            if (
+                position
+                >= start
+                + self.config.max_candidates
+            ):
+                return
+
+    def _alphabet(self) -> list[str]:
+
+        alphabet = []
+
+        # Keywords are character pools.
+        #
+        # Example:
+        #
+        # ["ab"]
+        #
+        # becomes:
+        #
+        # ["a", "b"]
+        #
+        for keyword in self.config.keywords:
+
+            for character in keyword:
+
+                if character:
+                    alphabet.append(
+                        character
+                    )
+
+        # Numbers and symbols are also
+        # individual alphabet elements.
+        for number in self.config.numbers:
+
+            for character in number:
+
+                if character:
+                    alphabet.append(
+                        character
+                    )
+
+        for symbol in self.config.symbols:
+
+            for character in symbol:
+
+                if character:
+                    alphabet.append(
+                        character
+                    )
+
+        # Remove duplicates while
+        # preserving insertion order.
+        return list(
+            dict.fromkeys(
+                alphabet
+            )
         )
