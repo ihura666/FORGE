@@ -3,16 +3,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 ```
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<title>FORGE | Advanced Password & Word Generation</title>
 
 <meta
     name="description"
-    content="FORGE. A professional word and candidate generation engine."
+    content="FORGE is an advanced password and word generation engine built for controlled, high-volume candidate generation."
 >
 
 <meta
@@ -20,11 +18,16 @@
     content="index, follow"
 >
 
-<title>FORGE | Professional Generation Engine</title>
+<link
+    rel="canonical"
+    href="https://ihura666.github.io/FORGE/"
+>
 
 <style>
     * {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
 
     html {
@@ -32,399 +35,260 @@
     }
 
     body {
-        margin: 0;
         min-height: 100vh;
         background: #050505;
-        color: #f4f4f4;
+        color: #f1f1f1;
         font-family:
             Inter,
-            ui-sans-serif,
-            system-ui,
             -apple-system,
             BlinkMacSystemFont,
             "Segoe UI",
             sans-serif;
+        line-height: 1.6;
     }
 
     a {
         color: inherit;
+        text-decoration: none;
     }
 
-    .nav {
-        position: fixed;
+    .container {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+    }
+
+    nav {
+        position: sticky;
         top: 0;
-        left: 0;
-        right: 0;
+        z-index: 1000;
+        border-bottom: 1px solid #1d1d1d;
+        background: rgba(5, 5, 5, 0.94);
+        backdrop-filter: blur(12px);
+    }
 
-        height: 72px;
-
+    .nav-inner {
+        min-height: 72px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-
-        padding: 0 34px;
-
-        background: rgba(5, 5, 5, 0.94);
-        border-bottom: 1px solid #202020;
-
-        backdrop-filter: blur(12px);
-
-        z-index: 1000;
+        gap: 30px;
     }
 
     .brand {
-        text-decoration: none;
-        font-size: 20px;
+        font-size: 1.35rem;
         font-weight: 900;
-        letter-spacing: 5px;
+        letter-spacing: 0.14em;
+    }
+
+    .brand span {
+        color: #888;
     }
 
     .nav-links {
         display: flex;
         align-items: center;
-        gap: 26px;
+        gap: 24px;
+        list-style: none;
+        font-size: 0.94rem;
     }
 
     .nav-links a {
-        text-decoration: none;
-        color: #999;
-        font-size: 14px;
-        transition:
-            color 0.2s ease;
+        color: #aaa;
+        transition: color 0.2s ease;
     }
 
-    .nav-links a:hover {
+    .nav-links a:hover,
+    .nav-links a.active {
         color: #fff;
     }
 
-    .nav-button {
-        padding: 10px 17px;
-
+    .nav-pro {
+        padding: 9px 16px;
         border: 1px solid #444;
-        border-radius: 7px;
-
+        border-radius: 6px;
         color: #fff !important;
-
-        background: #111;
-    }
-
-    .nav-button:hover {
-        background: #1b1b1b;
     }
 
     .hero {
-        min-height: 100vh;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        padding:
-            120px
-            24px
-            80px;
-
+        padding: 120px 0 100px;
         text-align: center;
     }
 
-    .hero-inner {
-        width: 100%;
-        max-width: 900px;
-    }
-
     .eyebrow {
-        margin-bottom: 20px;
-
-        color: #777;
-
-        font-size: 12px;
-        font-weight: 700;
-
-        letter-spacing: 5px;
+        display: inline-block;
+        margin-bottom: 22px;
+        padding: 7px 13px;
+        border: 1px solid #2d2d2d;
+        border-radius: 999px;
+        color: #999;
+        font-size: 0.78rem;
+        letter-spacing: 0.13em;
         text-transform: uppercase;
     }
 
-    .hero h1 {
-        margin: 0;
-
-        font-size:
-            clamp(64px, 13vw, 150px);
-
-        line-height: 0.9;
-
-        letter-spacing:
-            clamp(8px, 2vw, 20px);
-
-        font-weight: 950;
-    }
-
-    .hero h2 {
-        margin:
-            28px
-            0
-            20px;
-
-        font-size:
-            clamp(22px, 4vw, 38px);
-
-        font-weight: 500;
-
-        color: #d8d8d8;
+    h1 {
+        max-width: 900px;
+        margin: 0 auto;
+        font-size: clamp(3rem, 8vw, 6.5rem);
+        line-height: 0.95;
+        letter-spacing: -0.055em;
     }
 
     .hero p {
-        max-width: 650px;
-
-        margin:
-            0
-            auto
-            34px;
-
-        color: #777;
-
-        font-size: 17px;
-        line-height: 1.7;
+        max-width: 700px;
+        margin: 30px auto 0;
+        color: #999;
+        font-size: 1.1rem;
     }
 
     .actions {
         display: flex;
         justify-content: center;
-        align-items: center;
-        gap: 14px;
         flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 38px;
     }
 
     .button {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-
         min-width: 150px;
-
-        padding:
-            13px
-            21px;
-
-        border-radius: 8px;
-
-        text-decoration: none;
-
-        font-size: 14px;
-        font-weight: 800;
-
+        padding: 13px 22px;
+        border: 1px solid #333;
+        border-radius: 7px;
+        font-weight: 700;
         transition:
             transform 0.2s ease,
-            background 0.2s ease,
-            border-color 0.2s ease;
+            border-color 0.2s ease,
+            background 0.2s ease;
     }
 
     .button:hover {
         transform: translateY(-2px);
+        border-color: #666;
     }
 
     .button-primary {
-        background: #f2f2f2;
+        background: #f1f1f1;
         color: #050505;
+        border-color: #f1f1f1;
     }
 
     .button-primary:hover {
         background: #fff;
     }
 
-    .button-secondary {
-        border: 1px solid #333;
-        background: #0c0c0c;
-        color: #ddd;
-    }
-
-    .button-secondary:hover {
-        border-color: #555;
-    }
-
     .section {
-        padding:
-            100px
-            24px;
+        padding: 90px 0;
+        border-top: 1px solid #171717;
     }
 
-    .section-inner {
-        width: 100%;
-        max-width: 1050px;
-        margin: 0 auto;
+    .section-header {
+        max-width: 700px;
+        margin-bottom: 45px;
     }
 
-    .section-heading {
-        margin-bottom: 50px;
+    .section-header h2 {
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        letter-spacing: -0.035em;
     }
 
-    .section-heading span {
-        display: block;
-
-        margin-bottom: 12px;
-
-        color: #666;
-
-        font-size: 11px;
-        font-weight: 800;
-
-        letter-spacing: 4px;
-        text-transform: uppercase;
-    }
-
-    .section-heading h2 {
-        margin: 0;
-
-        font-size:
-            clamp(30px, 5vw, 48px);
-    }
-
-    .section-heading p {
-        max-width: 650px;
-
-        margin-top: 16px;
-
-        color: #777;
-
-        line-height: 1.7;
+    .section-header p {
+        margin-top: 14px;
+        color: #888;
     }
 
     .grid {
         display: grid;
-
-        grid-template-columns:
-            repeat(3, 1fr);
-
+        grid-template-columns: repeat(3, 1fr);
         gap: 18px;
     }
 
     .card {
-        min-height: 220px;
-
         padding: 28px;
-
-        border:
-            1px solid #202020;
-
-        border-radius: 14px;
-
-        background: #0a0a0a;
-    }
-
-    .card-number {
-        color: #555;
-
-        font-size: 12px;
-        font-weight: 800;
-
-        letter-spacing: 2px;
+        border: 1px solid #202020;
+        border-radius: 10px;
+        background: #090909;
     }
 
     .card h3 {
-        margin:
-            28px
-            0
-            12px;
-
-        font-size: 20px;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
     }
 
     .card p {
-        margin: 0;
-
-        color: #777;
-
-        line-height: 1.65;
+        color: #888;
+        font-size: 0.94rem;
     }
 
     .cta {
+        padding: 70px 30px;
+        border: 1px solid #252525;
+        border-radius: 12px;
+        background: #090909;
         text-align: center;
     }
 
-    .cta-box {
-        padding:
-            60px
-            30px;
-
-        border:
-            1px solid #292929;
-
-        border-radius: 16px;
-
-        background: #0a0a0a;
+    .cta h2 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        letter-spacing: -0.04em;
     }
 
-    .cta-box h2 {
-        margin: 0 0 14px;
-
-        font-size:
-            clamp(30px, 5vw, 48px);
-    }
-
-    .cta-box p {
-        margin:
-            0
-            auto
-            28px;
-
-        max-width: 600px;
-
-        color: #777;
-
-        line-height: 1.7;
+    .cta p {
+        max-width: 650px;
+        margin: 16px auto 0;
+        color: #888;
     }
 
     footer {
-        padding:
-            35px
-            24px;
-
-        border-top:
-            1px solid #181818;
-
-        color: #555;
-
-        text-align: center;
-
-        font-size: 13px;
+        padding: 35px 0;
+        border-top: 1px solid #171717;
+        color: #666;
+        font-size: 0.85rem;
     }
 
-    footer a {
-        color: #777;
-        text-decoration: none;
+    .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
     }
 
-    footer a:hover {
+    .footer-links {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .footer-links a:hover {
         color: #fff;
     }
 
     @media (max-width: 760px) {
-        .nav {
-            padding:
-                0
-                18px;
+        .nav-inner {
+            min-height: auto;
+            padding: 16px 0;
+            align-items: flex-start;
+            flex-direction: column;
         }
 
         .nav-links {
-            gap: 12px;
-        }
-
-        .nav-links a:not(.nav-button) {
-            display: none;
-        }
-
-        .grid {
-            grid-template-columns:
-                1fr;
+            width: 100%;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
         .hero {
-            padding-top: 110px;
+            padding: 85px 0 75px;
         }
 
-        .cta-box {
-            padding:
-                45px
-                22px;
+        .grid {
+            grid-template-columns: 1fr;
+        }
+
+        .footer-inner {
+            flex-direction: column;
         }
     }
 </style>
@@ -434,273 +298,255 @@
 
 <body>
 
+<nav>
+    <div class="container nav-inner">
+
 ```
-<!-- =========================================================
-     NAVIGATION
-     ========================================================= -->
-
-<nav class="nav">
-
     <a
         class="brand"
-        href="/"
+        href="/FORGE/"
         aria-label="FORGE home"
     >
-        FORGE
+        FORGE<span>.</span>
     </a>
 
-    <div class="nav-links">
+    <ul class="nav-links">
+        <li>
+            <a
+                class="active"
+                href="/FORGE/"
+            >
+                Home
+            </a>
+        </li>
 
-        <a href="/">
-            Home
-        </a>
+        <li>
+            <a href="/FORGE/pricing/">
+                Pricing
+            </a>
+        </li>
 
-        <a href="/pricing/">
-            Pricing
-        </a>
+        <li>
+            <a href="/FORGE/download/">
+                Download
+            </a>
+        </li>
 
-        <a href="/download/">
-            Download
-        </a>
+        <li>
+            <a
+                class="nav-pro"
+                href="/FORGE/pricing/"
+            >
+                Get FORGE Pro
+            </a>
+        </li>
+    </ul>
 
-        <a
-            class="nav-button"
-            href="/pricing/"
-        >
-            Get FORGE Pro
-        </a>
-
-    </div>
+</div>
+```
 
 </nav>
 
-
-<!-- =========================================================
-     HERO
-     ========================================================= -->
-
 <main>
 
-    <section class="hero">
+```
+<section class="hero">
+    <div class="container">
 
-        <div class="hero-inner">
+        <span class="eyebrow">
+            FORGE v1.0.0
+        </span>
 
-            <div class="eyebrow">
-                Professional Generation Engine
-            </div>
+        <h1>
+            Forge what you need.
+        </h1>
 
-            <h1>
-                FORGE
-            </h1>
+        <p>
+            An advanced word and password generation engine
+            designed for controlled, high-volume candidate
+            generation with deterministic workflows and
+            flexible generation modes.
+        </p>
 
+        <div class="actions">
+
+            <a
+                class="button button-primary"
+                href="/FORGE/download/"
+            >
+                Download FORGE
+            </a>
+
+            <a
+                class="button"
+                href="/FORGE/pricing/"
+            >
+                Get FORGE Pro
+            </a>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
             <h2>
-                Build candidates. Control the search.
+                Built for control.
             </h2>
 
             <p>
-                FORGE is a high-performance candidate
-                generation engine built for controlled,
-                configurable and repeatable generation
-                workflows.
+                FORGE provides structured candidate generation
+                without forcing every workflow into the same
+                generation strategy.
+            </p>
+        </div>
+
+        <div class="grid">
+
+            <article class="card">
+                <h3>
+                    Smart Generation
+                </h3>
+
+                <p>
+                    Generate English-like candidates using
+                    intelligent word construction and controlled
+                    variation.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>
+                    Exhaustive Generation
+                </h3>
+
+                <p>
+                    Explore controlled combinations when complete
+                    candidate coverage is required.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>
+                    Controlled Output
+                </h3>
+
+                <p>
+                    Define candidate limits, required lengths,
+                    traversal strategies and output behavior.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>
+                    Resume Support
+                </h3>
+
+                <p>
+                    Continue long-running generation workflows
+                    from previously saved state instead of
+                    starting from zero.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>
+                    Linux Release
+                </h3>
+
+                <p>
+                    The current public release provides a
+                    Linux x86-64 executable ready for deployment.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>
+                    Pro Edition
+                </h3>
+
+                <p>
+                    Unlock the commercial FORGE Pro experience
+                    through the official purchase flow.
+                </p>
+            </article>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="cta">
+
+            <h2>
+                Ready to use FORGE?
+            </h2>
+
+            <p>
+                Download the current release or activate
+                FORGE Pro through the commercial purchase flow.
             </p>
 
             <div class="actions">
 
                 <a
                     class="button button-primary"
-                    href="/pricing/"
-                >
-                    Get FORGE Pro
-                </a>
-
-                <a
-                    class="button button-secondary"
-                    href="/download/"
+                    href="/FORGE/download/"
                 >
                     Download
                 </a>
 
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         FEATURES
-         ===================================================== -->
-
-    <section class="section">
-
-        <div class="section-inner">
-
-            <div class="section-heading">
-
-                <span>
-                    Engine
-                </span>
-
-                <h2>
-                    Built for control.
-                </h2>
-
-                <p>
-                    FORGE provides configurable generation
-                    modes, length constraints, candidate
-                    limits and structured traversal without
-                    turning the process into a guessing game.
-                </p>
-
-            </div>
-
-
-            <div class="grid">
-
-                <article class="card">
-
-                    <div class="card-number">
-                        01
-                    </div>
-
-                    <h3>
-                        Smart Generation
-                    </h3>
-
-                    <p>
-                        Prioritizes useful candidate
-                        structures while respecting the
-                        parameters supplied to the engine.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        02
-                    </div>
-
-                    <h3>
-                        Controlled Limits
-                    </h3>
-
-                    <p>
-                        Define exact candidate lengths
-                        and generation limits so large
-                        searches remain bounded.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        03
-                    </div>
-
-                    <h3>
-                        Multiple Traversals
-                    </h3>
-
-                    <p>
-                        Sequential, priority, rotation,
-                        alphabetical and random traversal
-                        strategies provide different search
-                        orders.
-                    </p>
-
-                </article>
+                <a
+                    class="button"
+                    href="/FORGE/pricing/"
+                >
+                    View Pricing
+                </a>
 
             </div>
 
         </div>
 
-    </section>
-
-
-    <!-- =====================================================
-         PURCHASE
-         ===================================================== -->
-
-    <section class="section cta">
-
-        <div class="section-inner">
-
-            <div class="cta-box">
-
-                <h2>
-                    FORGE Pro
-                </h2>
-
-                <p>
-                    Get the professional release with
-                    license activation for up to two
-                    machines.
-                </p>
-
-                <div class="actions">
-
-                    <a
-                        class="button button-primary"
-                        href="/pricing/"
-                    >
-                        View Pricing
-                    </a>
-
-                    <a
-                        class="button button-secondary"
-                        href="/download/"
-                    >
-                        Download
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
+    </div>
+</section>
+```
 
 </main>
 
-
-<!-- =========================================================
-     FOOTER
-     ========================================================= -->
-
 <footer>
+    <div class="container footer-inner">
 
+```
     <div>
-        FORGE
-        &nbsp;·&nbsp;
-        Professional Generation Engine
+        © 2026 FORGE. All rights reserved.
     </div>
 
-    <div style="margin-top:10px;">
+    <div class="footer-links">
 
-        <a href="/pricing/">
+        <a href="/FORGE/">
+            Home
+        </a>
+
+        <a href="/FORGE/pricing/">
             Pricing
         </a>
 
-        &nbsp;·&nbsp;
-
-        <a href="/download/">
+        <a href="/FORGE/download/">
             Download
         </a>
 
     </div>
 
-    <div style="margin-top:14px;">
-        © 2026 FORGE. All rights reserved.
-    </div>
+</div>
+```
 
 </footer>
-```
 
 </body>
 </html>
