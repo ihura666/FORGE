@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+```
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>FORGE | Payment</title>
+
+<style>
+    :root {
+        --bg: #07090d;
+        --panel: #0d1118;
+        --panel-2: #111722;
+        --border: #202938;
+        --text: #f4f7fb;
+        --muted: #8994a5;
+        --success: #43d17c;
+        --danger: #ff5c5c;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+
+        background:
+            radial-gradient(
+                circle at top,
+                #151c28 0,
+                #07090d 45%,
+                #05070a 100%
+            );
+
+        color: var(--text);
+
+        font-family:
+            Inter,
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+    }
+
+    .container {
+        width: min(620px, 100%);
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 28px;
+
+        font-weight: 800;
+        letter-spacing: 0.16em;
+    }
+
+    .brand-mark {
+        width: 34px;
+        height: 34px;
+
+        display: grid;
+        place-items: center;
+
+        border: 1px solid #475164;
+        background: #0f141c;
+
+        font-size: 13px;
+    }
+
+    .card {
+        overflow: hidden;
+
+        border: 1px solid var(--border);
+        border-radius: 16px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.035),
+                rgba(255, 255, 255, 0.012)
+            ),
+            var(--panel);
+
+        box-shadow:
+            0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .header {
+        padding: 28px;
+
+        border-bottom:
+            1px solid var(--border);
+    }
+
+    .header h1 {
+        font-size: 28px;
+        letter-spacing: -0.03em;
+    }
+
+    .header p {
+        margin-top: 8px;
+
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    .body {
+        padding: 28px;
+    }
+
+    .summary {
+        margin-bottom: 24px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 10px;
+
+        background:
+            var(--panel-2);
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+
+        padding: 14px 16px;
+
+        border-bottom:
+            1px solid rgba(255, 255, 255, 0.05);
+
+        font-size: 14px;
+    }
+
+    .row:last-child {
+        border-bottom: 0;
+    }
+
+    .label {
+        color: var(--muted);
+    }
+
+    .value {
+        text-align: right;
+        word-break: break-word;
+    }
+
+    .amount {
+        font-size: 22px;
+        font-weight: 800;
+    }
+
+    .btn {
+        width: 100%;
+        min-height: 52px;
+
+        border:
+            1px solid #e5e9ef;
+
+        border-radius: 9px;
+
+        background: #f5f7fa;
+        color: #080a0d;
+
+        cursor: pointer;
+
+        font-weight: 800;
+
+        transition:
+            transform 0.15s ease,
+            opacity 0.15s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .status {
+        display: none;
+
+        margin-top: 18px;
+        padding: 14px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 9px;
+
+        background:
+            rgba(255, 255, 255, 0.025);
+
+        color: var(--muted);
+
+        font-size: 13px;
+    }
+
+    .status.visible {
+        display: block;
+    }
+
+    .status.error {
+        border-color:
+            rgba(255, 92, 92, 0.35);
+
+        color: #ff9b9b;
+    }
+
+    .status.success {
+        border-color:
+            rgba(67, 209, 124, 0.35);
+
+        color: #9af0ba;
+    }
+
+    .back {
+        display: block;
+
+        margin-top: 18px;
+
+        color: var(--muted);
+
+        text-align: center;
+
+        font-size: 13px;
+    }
+
+    .back:hover {
+        color: var(--text);
+    }
+
+    .security {
+        margin-top: 20px;
+
+        color: var(--muted);
+
+        text-align: center;
+
+        font-size: 12px;
+    }
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+
+        display: inline-block;
+
+        margin-right: 8px;
+
+        vertical-align: -3px;
+
+        border:
+            2px solid rgba(0, 0, 0, 0.2);
+
+        border-top-color:
+            rgba(0, 0, 0, 0.8);
+
+        border-radius: 50%;
+
+        animation:
+            spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media (max-width: 520px) {
+        .header,
+        .body {
+            padding: 22px;
+        }
+
+        .row {
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .value {
+            text-align: left;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<div class="brand">
+    <span class="brand-mark">F</span>
+    <span>FORGE</span>
+</div>
+
+<section class="card">
+
+    <div class="header">
+        <h1>Complete payment</h1>
+
+        <p>
+            Secure payment processing through Flutterwave.
+        </p>
+    </div>
+
+    <div class="body">
+
+        <div class="summary">
+
+            <div class="row">
+                <span class="label">
+                    Product
+                </span>
+
+                <span
+                    id="product"
+                    class="value"
+                >
+                    FORGE Pro
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">
+                    Customer
+                </span>
+
+                <span
+                    id="customer"
+                    class="value"
+                >
+                    -
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">
+                    Reference
+                </span>
+
+                <span
+                    id="txRef"
+                    class="value"
+                >
+                    -
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">
+                    Amount
+                </span>
+
+                <span
+                    id="amount"
+                    class="value amount"
+                >
+                    -
+                </span>
+            </div>
+
+        </div>
+
+        <button
+            id="payButton"
+            class="btn"
+            type="button"
+        >
+            Pay with Flutterwave
+        </button>
+
+        <div
+            id="status"
+            class="status"
+            role="status"
+            aria-live="polite"
+        ></div>
+
+        <a
+            href="index.html"
+            class="back"
+        >
+            ← Return to FORGE
+        </a>
+
+        <div class="security">
+            Your payment is verified by the FORGE server.
+            Browser-side success does not issue a license.
+        </div>
+
+    </div>
+
+</section>
+```
+
+</div>
+
+<script>
+"use strict";
+
+const API_BASE =
+    window.FORGE_API_BASE ||
+    "http://127.0.0.1:8787";
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const orderId =
+    params.get("order_id") || "";
+
+const txRef =
+    params.get("tx_ref") || "";
+
+const amount =
+    params.get("amount") || "";
+
+const currency =
+    params.get("currency") || "";
+
+const publicKey =
+    params.get("public_key") || "";
+
+const email =
+    params.get("email") || "";
+
+const name =
+    params.get("name") || "";
+
+const product =
+    "FORGE Pro";
+
+const customerElement =
+    document.getElementById("customer");
+
+const txRefElement =
+    document.getElementById("txRef");
+
+const amountElement =
+    document.getElementById("amount");
+
+const payButton =
+    document.getElementById("payButton");
+
+const statusBox =
+    document.getElementById("status");
+
+customerElement.textContent =
+    email || "-";
+
+txRefElement.textContent =
+    txRef || "-";
+
+amountElement.textContent =
+    amount && currency
+        ? `${amount} ${currency}`
+        : "-";
+
+function showStatus(
+    message,
+    type = ""
+) {
+    statusBox.textContent = message;
+
+    statusBox.className =
+        "status visible";
+
+    if (type) {
+        statusBox.classList.add(type);
+    }
+}
+
+function loadFlutterwave() {
+    return new Promise(
+        (resolve, reject) => {
+
+            if (
+                window.FlutterwaveCheckout
+            ) {
+                resolve();
+                return;
+            }
+
+            const script =
+                document.createElement(
+                    "script"
+                );
+
+            script.src =
+                "https://checkout.flutterwave.com/v3.js";
+
+            script.async = true;
+
+            script.onload =
+                () => resolve();
+
+            script.onerror =
+                () =>
+                    reject(
+                        new Error(
+                            "Unable to load Flutterwave."
+                        )
+                    );
+
+            document.head.appendChild(
+                script
+            );
+        }
+    );
+}
+
+function validateOrderData() {
+    if (!orderId) {
+        throw new Error(
+            "Missing order ID."
+        );
+    }
+
+    if (!txRef) {
+        throw new Error(
+            "Missing transaction reference."
+        );
+    }
+
+    if (!amount) {
+        throw new Error(
+            "Missing payment amount."
+        );
+    }
+
+    if (!currency) {
+        throw new Error(
+            "Missing payment currency."
+        );
+    }
+
+    if (!publicKey) {
+        throw new Error(
+            "Payment provider configuration is incomplete."
+        );
+    }
+
+    if (!email) {
+        throw new Error(
+            "Customer email is missing."
+        );
+    }
+}
+
+async function startPayment() {
+    try {
+        validateOrderData();
+
+        payButton.disabled = true;
+
+        payButton.innerHTML =
+            '<span class="spinner"></span>Loading payment...';
+
+        await loadFlutterwave();
+
+        showStatus(
+            "Opening secure payment...",
+            ""
+        );
+
+        FlutterwaveCheckout({
+            public_key: publicKey,
+
+            tx_ref: txRef,
+
+            amount: Number(amount),
+
+            currency: currency,
+
+            payment_options:
+                "card,banktransfer,ussd",
+
+            customer: {
+                email: email,
+                name: name || "FORGE Customer"
+            },
+
+            customizations: {
+                title: "FORGE Pro",
+                description:
+                    "Professional FORGE license",
+                logo: ""
+            },
+
+            callback: function (payment) {
+                handlePaymentCallback(
+                    payment
+                );
+            },
+
+            onclose: function () {
+                payButton.disabled = false;
+
+                payButton.textContent =
+                    "Pay with Flutterwave";
+
+                showStatus(
+                    "Payment window closed. No license has been issued.",
+                    ""
+                );
+            }
+        });
+
+    } catch (error) {
+        console.error(
+            "Payment initialization error:",
+            error
+        );
+
+        showStatus(
+            error.message ||
+            "Unable to initialize payment.",
+            "error"
+        );
+
+        payButton.disabled = false;
+
+        payButton.textContent =
+            "Pay with Flutterwave";
+    }
+}
+
+async function handlePaymentCallback(
+    payment
+) {
+    console.log(
+        "Flutterwave callback:",
+        payment
+    );
+
+    showStatus(
+        "Payment response received. The server is verifying the transaction...",
+        ""
+    );
+
+    payButton.disabled = true;
+
+    /*
+     * IMPORTANT:
+     *
+     * The callback is NOT trusted as proof of payment.
+     *
+     * The Flutterwave webhook handled by server.js
+     * remains authoritative.
+     */
+
+    if (
+        payment &&
+        (
+            payment.status ===
+                "successful" ||
+            payment.status ===
+                "completed"
+        )
+    ) {
+        showStatus(
+            "Payment submitted. Verification is being completed by the FORGE server.",
+            "success"
+        );
+
+        payButton.textContent =
+            "Payment submitted";
+
+        /*
+         * Give the webhook a short opportunity
+         * to process the transaction, then return
+         * the customer to the main page.
+         */
+        setTimeout(
+            () => {
+                window.location.href =
+                    "index.html?payment=pending";
+            },
+            2500
+        );
+
+        return;
+    }
+
+    showStatus(
+        "Payment was not completed.",
+        "error"
+    );
+
+    payButton.disabled = false;
+
+    payButton.textContent =
+        "Pay with Flutterwave";
+}
+
+if (!orderId) {
+    showStatus(
+        "This payment session is invalid or incomplete.",
+        "error"
+    );
+
+    payButton.disabled = true;
+} else {
+    payButton.addEventListener(
+        "click",
+        startPayment
+    );
+}
+</script>
+
+</body>
+</html>

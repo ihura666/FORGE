@@ -12,7 +12,9 @@ from forge_engine.core.config import (
 from forge_engine.core.factory import create_engine
 
 
-VERSION = "1.0.3"
+VERSION = "1.0.4"
+
+FREE_LIMIT = 1_000_000
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -28,6 +30,15 @@ def build_parser() -> argparse.ArgumentParser:
         "--version",
         action="version",
         version=f"FORGE {VERSION}",
+    )
+
+    parser.add_argument(
+        "--free",
+        action="store_true",
+        help=(
+            "Run FORGE in free mode. "
+            "Maximum output is 1,000,000 candidates."
+        ),
     )
 
     parser.add_argument(
@@ -92,25 +103,49 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def build_config(args: argparse.Namespace) -> GenerationConfig:
+def build_config(
+    args: argparse.Namespace,
+) -> GenerationConfig:
+
     if args.length <= 0:
-        raise ValueError("length must be greater than zero")
+        raise ValueError(
+            "length must be greater than zero"
+        )
 
     if args.limit <= 0:
-        raise ValueError("limit must be greater than zero")
+        raise ValueError(
+            "limit must be greater than zero"
+        )
+
+    if not args.keywords:
+        raise ValueError(
+            "At least one keyword is required"
+        )
+
+    if args.free:
+        effective_limit = min(
+            args.limit,
+            FREE_LIMIT,
+        )
+    else:
+        effective_limit = args.limit
 
     return GenerationConfig(
         mode=GenerationMode(args.mode),
         traversal=TraversalMode(args.traversal),
         required_length=args.length,
-        max_candidates=args.limit,
+        max_candidates=effective_limit,
         keywords=args.keywords,
         numbers=args.numbers,
         symbols=args.symbols,
     )
 
 
-def write_candidates(output: Path, candidates) -> int:
+def write_candidates(
+    output: Path,
+    candidates,
+) -> int:
+
     output.parent.mkdir(
         parents=True,
         exist_ok=True,
@@ -122,7 +157,9 @@ def write_candidates(output: Path, candidates) -> int:
         "w",
         encoding="utf-8",
     ) as handle:
+
         for candidate in candidates:
+
             value = getattr(
                 candidate,
                 "value",
@@ -138,7 +175,10 @@ def write_candidates(output: Path, candidates) -> int:
     return count
 
 
-def run(args: argparse.Namespace) -> int:
+def run(
+    args: argparse.Namespace,
+) -> int:
+
     config = build_config(args)
 
     engine = create_engine(config)
@@ -158,18 +198,37 @@ def run(args: argparse.Namespace) -> int:
         f"Output: {args.output}"
     )
 
+    if args.free:
+
+        if args.limit > FREE_LIMIT:
+
+            print(
+                "Free mode limit applied: "
+                f"{FREE_LIMIT:,} candidates"
+            )
+
+        else:
+
+            print(
+                "FORGE Free Mode: "
+                f"maximum {FREE_LIMIT:,} candidates"
+            )
+
     return 0
 
 
 def main(argv=None) -> int:
+
     parser = build_parser()
 
     try:
+
         args = parser.parse_args(argv)
 
         return run(args)
 
     except KeyboardInterrupt:
+
         print(
             "\nFORGE interrupted.",
             file=sys.stderr,
@@ -177,7 +236,11 @@ def main(argv=None) -> int:
 
         return 130
 
-    except (ValueError, TypeError) as exc:
+    except (
+        ValueError,
+        TypeError,
+    ) as exc:
+
         print(
             f"FORGE error: {exc}",
             file=sys.stderr,
@@ -186,6 +249,7 @@ def main(argv=None) -> int:
         return 2
 
     except Exception as exc:
+
         print(
             f"FORGE fatal error: {exc}",
             file=sys.stderr,
@@ -195,4 +259,6 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(
+        main()
+    )

@@ -12,8 +12,6 @@ class ExhaustiveEngine(GenerationEngine):
         start: int = 0,
     ) -> Iterator[Candidate]:
 
-        position = 0
-
         alphabet = self._alphabet()
 
         if not alphabet:
@@ -23,6 +21,9 @@ class ExhaustiveEngine(GenerationEngine):
 
         if length < 1:
             return
+
+        generated = 0
+        position = 0
 
         for symbols in product(
             alphabet,
@@ -42,61 +43,42 @@ class ExhaustiveEngine(GenerationEngine):
             )
 
             position += 1
+            generated += 1
 
-            if (
-                position
-                >= start
-                + self.config.max_candidates
+            if generated >= (
+                self.config.max_candidates
             ):
                 return
 
     def _alphabet(self) -> list[str]:
 
-        alphabet = []
+        characters: list[str] = []
 
-        # Keywords are character pools.
-        #
-        # Example:
-        #
-        # ["ab"]
-        #
-        # becomes:
-        #
-        # ["a", "b"]
-        #
+        # Preserve keyword characters in the order supplied.
         for keyword in self.config.keywords:
 
             for character in keyword:
 
                 if character:
-                    alphabet.append(
-                        character
-                    )
+                    characters.append(character)
 
-        # Numbers and symbols are also
-        # individual alphabet elements.
+        # Add numbers.
         for number in self.config.numbers:
 
             for character in number:
 
                 if character:
-                    alphabet.append(
-                        character
-                    )
+                    characters.append(character)
 
+        # Add symbols.
         for symbol in self.config.symbols:
 
             for character in symbol:
 
                 if character:
-                    alphabet.append(
-                        character
-                    )
+                    characters.append(character)
 
-        # Remove duplicates while
-        # preserving insertion order.
+        # Remove duplicates while preserving order.
         return list(
-            dict.fromkeys(
-                alphabet
-            )
+            dict.fromkeys(characters)
         )

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>FORGE | Payment Status</title>
+
+    <style>
+        :root {
+            --bg: #07090d;
+            --panel: #0d1118;
+            --border: #202936;
+            --text: #f2f5f8;
+            --muted: #8b96a7;
+            --accent: #d8ff3e;
+            --success: #63e6a4;
+            --danger: #ff5d73;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(216, 255, 62, 0.08),
+                    transparent 35%
+                ),
+                var(--bg);
+            color: var(--text);
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                sans-serif;
+        }
+
+        .card {
+            width: min(
+                560px,
+                calc(100% - 40px)
+            );
+
+            padding: 42px;
+
+            background: var(--panel);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+
+            text-align: center;
+        }
+
+        .mark {
+            width: 52px;
+            height: 52px;
+
+            margin: 0 auto 24px;
+
+            display: grid;
+            place-items: center;
+
+            border:
+                1px solid var(--accent);
+
+            color: var(--accent);
+
+            font-weight: 900;
+            font-size: 22px;
+
+            transform: skew(-8deg);
+        }
+
+        h1 {
+            margin: 0 0 14px;
+
+            font-size: 34px;
+
+            letter-spacing: -0.04em;
+        }
+
+        p {
+            color: var(--muted);
+
+            line-height: 1.7;
+        }
+
+        .status {
+            margin-top: 28px;
+
+            padding: 18px;
+
+            border-radius: 8px;
+
+            background: #090d13;
+
+            border:
+                1px solid var(--border);
+
+            text-align: left;
+
+            font-family:
+                "SFMono-Regular",
+                Consolas,
+                monospace;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+
+            word-break: break-word;
+        }
+
+        .success {
+            color: var(--success);
+        }
+
+        .error {
+            color: var(--danger);
+        }
+
+        .button {
+            display: inline-block;
+
+            margin-top: 28px;
+
+            padding: 13px 20px;
+
+            border-radius: 8px;
+
+            background: var(--accent);
+
+            color: #090b0d;
+
+            font-weight: 800;
+
+            text-decoration: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 28px;
+            height: 28px;
+
+            margin: 25px auto;
+
+            border:
+                3px solid #252d38;
+
+            border-top-color:
+                var(--accent);
+
+            border-radius: 50%;
+
+            animation:
+                spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="card">
+
+    <div class="mark">
+        F
+    </div>
+
+    <h1 id="title">
+        Verifying payment
+    </h1>
+
+    <p id="description">
+        FORGE is confirming your payment.
+        Do not close this page.
+    </p>
+
+    <div
+        id="spinner"
+        class="spinner"
+    ></div>
+
+    <div
+        id="status"
+        class="status hidden"
+    ></div>
+
+    <a
+        id="home-button"
+        class="button hidden"
+        href="/"
+    >
+        Return to FORGE
+    </a>
+
+</main>
+
+<script>
+
+"use strict";
+
+/* --------------------------------------------------------------------------
+   Configuration
+   -------------------------------------------------------------------------- */
+
+const API_BASE =
+    window.FORGE_API_BASE ||
+    "http://127.0.0.1:8787";
+
+/*
+ * Paystack normally returns the transaction reference as:
+ *
+ * ?reference=FORGE-...
+ *
+ * Some integrations may also expose:
+ *
+ * ?trxref=FORGE-...
+ */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const reference =
+    params.get("reference") ||
+    params.get("trxref") ||
+    "";
+
+/* --------------------------------------------------------------------------
+   Elements
+   -------------------------------------------------------------------------- */
+
+const title =
+    document.getElementById(
+        "title"
+    );
+
+const description =
+    document.getElementById(
+        "description"
+    );
+
+const spinner =
+    document.getElementById(
+        "spinner"
+    );
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+const homeButton =
+    document.getElementById(
+        "home-button"
+    );
+
+/* --------------------------------------------------------------------------
+   UI
+   -------------------------------------------------------------------------- */
+
+function finish(
+    titleText,
+    descriptionText,
+    message,
+    type
+) {
+    title.textContent =
+        titleText;
+
+    description.textContent =
+        descriptionText;
+
+    spinner.classList.add(
+        "hidden"
+    );
+
+    status.textContent =
+        message;
+
+    status.className =
+        `status ${type}`;
+
+    homeButton.classList.remove(
+        "hidden"
+    );
+}
+
+/* --------------------------------------------------------------------------
+   Payment verification
+   -------------------------------------------------------------------------- */
+
+async function checkPayment() {
+
+    if (!reference) {
+
+        finish(
+            "Payment reference missing",
+            "FORGE could not identify the transaction.",
+            "No Paystack transaction reference was supplied.",
+            "error"
+        );
+
+        return;
+    }
+
+    /*
+     * The webhook is the authoritative fulfillment mechanism.
+     *
+     * The customer may reach this page before Paystack's webhook
+     * has finished processing. Therefore we poll the order status.
+     */
+
+    const maxAttempts = 30;
+
+    for (
+        let attempt = 0;
+        attempt < maxAttempts;
+        attempt++
+    ) {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/checkout/status/${encodeURIComponent(reference)}`
+                );
+
+            const data =
+                await response.json();
+
+            if (
+                response.ok &&
+                data.status === "paid"
+            ) {
+
+                finish(
+                    "Payment confirmed",
+                    "Your FORGE purchase has been successfully processed.",
+                    `Reference: ${reference}\nLicense issued: ${data.license_issued ? "YES" : "NO"}`,
+                    "success"
+                );
+
+                return;
+            }
+
+            if (
+                response.ok &&
+                [
+                    "amount_mismatch",
+                    "currency_mismatch"
+                ].includes(
+                    data.status
+                )
+            ) {
+
+                finish(
+                    "Payment requires review",
+                    "The transaction was received but could not be automatically fulfilled.",
+                    `Reference: ${reference}\nStatus: ${data.status}`,
+                    "error"
+                );
+
+                return;
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Payment status request failed:",
+                error
+            );
+
+        }
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    2000
+                )
+        );
+    }
+
+    finish(
+        "Payment received",
+        "Your payment may still be processing. Your license will be issued once verification completes.",
+        `Reference: ${reference}\nVerification is still pending.`,
+        "success"
+    );
+}
+
+/* --------------------------------------------------------------------------
+   Start
+   -------------------------------------------------------------------------- */
+
+checkPayment();
+
+</script>
+
+</body>
+</html>

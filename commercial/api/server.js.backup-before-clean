@@ -1,0 +1,1688 @@
+```javascript
+"use strict";
+
+require("dotenv").config();
+
+const express = require("express");
+const cors = require("cors");
+const crypto = require("crypto");
+const Database = require("better-sqlite3");
+const path = require("path");
+
+const app = express();
+
+/*
+|--------------------------------------------------------------------------
+| Configuration
+|--------------------------------------------------------------------------
+*/
+
+const PORT = Number(process.env.PORT || 8787);
+
+const LICENSE_SECRET =
+    process.env.LICENSE_SECRET || "";
+
+const ADMIN_SECRET =
+    process.env.ADMIN_SECRET || "";
+
+const MAX_ACTIVATIONS = Math.max(
+    1,
+    Number(process.env.MAX_ACTIVATIONS || 2)
+);
+
+const DATABASE_PATH = path.resolve(
+    process.env.DATABASE_PATH || "./data/forge.db"
+);
+
+const FLW_PUBLIC_KEY =
+    process.env.FLW_PUBLIC_KEY || "";
+
+const FLW_SECRET_KEY =
+    process.env.FLW_SECRET_KEY || "";
+
+const FLW_SECRET_HASH =
+    process.env.FLW_SECRET_HASH || "";
+
+const PRODUCT =
+    process.env.FORGE_PRODUCT || "FORGE";
+
+const PLAN =
+    process.env.FORGE_PLAN || "pro";
+
+const PRICE =
+    Number(process.env.FORGE_PRICE || 29);
+
+const CURRENCY =
+    String(
+        process.env.FORGE_CURRENCY || "USD"
+    ).toUpperCase();
+
+if (!LICENSE_SECRET) {
+    console.warn(
+        "WARNING: LICENSE_SECRET is not configured"
+    );
+}
+
+if (!ADMIN_SECRET) {
+    console.warn(
+        "WARNING: ADMIN_SECRET is not configured"
+    );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Express
+|--------------------------------------------------------------------------
+*/
+
+app.use(cors());
+
+app.use(
+    express.json({
+        limit: "1mb"
+    })
+);
+
+/*
+|--------------------------------------------------------------------------
+| Database
+|--------------------------------------------------------------------------
+*/
+
+const db = new Database(
+    DATABASE_PATH
+);
+
+db.pragma("journal_mode = WAL");
+db.pragma("foreign_keys = ON");
+
+/*
+|--------------------------------------------------------------------------
+| Database schema
+|--------------------------------------------------------------------------
+*/
+
+db.exec(`
+    CREATE TABLE IF NOT EXISTS licenses (
+        id TEXT PRIMARY KEY,
+        key_hash TEXT NOT NULL UNIQUE,
+        product TEXT NOT NULL,
+        plan TEXT NOT NULL,
+        status TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        expires_at TEXT,
+        license_key TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS activations (
+        id TEXT PRIMARY KEY,
+        license_id TEXT NOT NULL,
+        machine_id TEXT NOT NULL,
+        activated_at TEXT NOT NULL,
+        last_seen_at TEXT,
+        FOREIGN KEY (license_id)
+            REFERENCES licenses(id)
+            ON DELETE CASCADE,
+        UNIQUE (license_id, machine_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS customers (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL UNIQUE,
+        name TEXT,
+        created_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS orders (
+        id TEXT PRIMARY KEY,
+        customer_id TEXT NOT NULL,
+        product TEXT NOT NULL,
+        plan TEXT NOT NULL,
+        amount REAL NOT NULL,
+        currency TEXT NOT NULL,
+        status TEXT NOT NULL,
+        license_id TEXT,
+        provider TEXT,
+        provider_reference TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (customer_id)
+            REFERENCES customers(id),
+        FOREIGN KEY (license_id)
+            REFERENCES licenses(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS payments (
+        id TEXT PRIMARY KEY,
+        order_id TEXT NOT NULL,
+        provider TEXT NOT NULL,
+        provider_transaction_id TEXT,
+        amount REAL NOT NULL,
+        currency TEXT NOT NULL,
+        status TEXT NOT NULL,
+        raw_event TEXT,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (order_id)
+            REFERENCES orders(id)
+    );
+`);
+
+/*
+|--------------------------------------------------------------------------
+| Compatibility migrations
+|--------------------------------------------------------------------------
+*/
+
+function hasColumn(table, column) {
+    return db
+        .prepare(
+            `PRAGMA table_info(${table})`
+        )
+        .all()
+        .some(
+            (row) =>
+                row.name === column
+        );
+}
+
+/*
+ * Older databases may not contain license_key.
+ */
+
+if (
+    !hasColumn(
+        "licenses",
+        "license_key"
+    )
+) {
+    db.exec(`
+        ALTER TABLE licenses
+        ADD COLUMN license_key TEXT
+    `);
+}
+
+/*
+ * Older databases may not contain last_seen_at.
+ */
+
+if (
+    !hasColumn(
+        "activations",
+        "last_seen_at"
+    )
+) {
+    db.exec(`
+        ALTER TABLE activations
+        ADD COLUMN last_seen_at TEXT
+    `);
+}
+
+/*
+ * Older databases may have key_hash added later.
+ */
+
+if (
+    !hasColumn(
+        "licenses",
+        "key_hash"
+    )
+) {
+    db.exec(`
+        ALTER TABLE licenses
+        ADD COLUMN key_hash TEXT
+    `);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Helpers
+|--------------------------------------------------------------------------
+*/
+
+function now() {
+    return new Date().toISOString();
+}
+
+function randomId() {
+    return crypto
+        .randomBytes(32)
+        .toString("hex");
+}
+
+function hashLicenseKey(key) {
+    return crypto
+        .createHash("sha256")
+        .update(
+            `${LICENSE_SECRET}:${key}`
+        )
+        .digest("hex");
+}
+
+function createLicenseKey() {
+    const groups = [];
+
+    for (let i = 0; i < 6; i++) {
+        groups.push(
+            crypto
+                .randomBytes(3)
+                .toString("hex")
+                .toUpperCase()
+        );
+    }
+
+    return groups.join("-");
+}
+
+function normalizeMachineId(machineId) {
+    return String(
+        machineId || ""
+    )
+        .trim()
+        .slice(0, 255);
+}
+
+function normalizeEmail(email) {
+    return String(
+        email || ""
+    )
+        .trim()
+        .toLowerCase();
+}
+
+function validEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        email
+    );
+}
+
+function generateTxRef() {
+    return (
+        "FORGE-" +
+        Date.now()
+            .toString(36)
+            .toUpperCase() +
+        "-" +
+        crypto
+            .randomBytes(8)
+            .toString("hex")
+            .toUpperCase()
+    );
+}
+
+function safeCompare(a, b) {
+    const left = Buffer.from(
+        String(a || "")
+    );
+
+    const right = Buffer.from(
+        String(b || "")
+    );
+
+    if (
+        left.length !==
+        right.length
+    ) {
+        return false;
+    }
+
+    return crypto.timingSafeEqual(
+        left,
+        right
+    );
+}
+
+/*
+|--------------------------------------------------------------------------
+| License creation
+|--------------------------------------------------------------------------
+*/
+
+function issueLicenseInternal(
+    product = PRODUCT,
+    plan = PLAN
+) {
+    let licenseKey;
+    let keyHash;
+
+    do {
+        licenseKey =
+            createLicenseKey();
+
+        keyHash =
+            hashLicenseKey(
+                licenseKey
+            );
+    } while (
+        db
+            .prepare(`
+                SELECT id
+                FROM licenses
+                WHERE key_hash = ?
+                   OR license_key = ?
+            `)
+            .get(
+                keyHash,
+                licenseKey
+            )
+    );
+
+    const id = keyHash;
+    const createdAt = now();
+
+    db.prepare(`
+        INSERT INTO licenses (
+            id,
+            key_hash,
+            product,
+            plan,
+            status,
+            created_at,
+            expires_at,
+            license_key
+        )
+        VALUES (
+            ?,
+            ?,
+            ?,
+            ?,
+            'active',
+            ?,
+            NULL,
+            ?
+        )
+    `).run(
+        id,
+        keyHash,
+        product,
+        plan,
+        createdAt,
+        licenseKey
+    );
+
+    return db
+        .prepare(`
+            SELECT
+                id,
+                license_key,
+                product,
+                plan,
+                status,
+                created_at,
+                expires_at
+            FROM licenses
+            WHERE id = ?
+        `)
+        .get(id);
+}
+
+/*
+|--------------------------------------------------------------------------
+| License lookup
+|--------------------------------------------------------------------------
+*/
+
+function findLicense(
+    licenseKey
+) {
+    if (!licenseKey) {
+        return null;
+    }
+
+    const keyHash =
+        hashLicenseKey(
+            licenseKey
+        );
+
+    return db
+        .prepare(`
+            SELECT *
+            FROM licenses
+            WHERE key_hash = ?
+        `)
+        .get(keyHash);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Admin authentication
+|--------------------------------------------------------------------------
+*/
+
+function requireAdmin(
+    req,
+    res,
+    next
+) {
+    if (!ADMIN_SECRET) {
+        return res.status(500).json({
+            error:
+                "admin_secret_not_configured"
+        });
+    }
+
+    const supplied =
+        req.headers[
+            "x-admin-secret"
+        ] ||
+        req.headers[
+            "authorization"
+        ]?.replace(
+            /^Bearer\s+/i,
+            ""
+        );
+
+    if (
+        !supplied ||
+        !safeCompare(
+            supplied,
+            ADMIN_SECRET
+        )
+    ) {
+        return res.status(401).json({
+            error: "unauthorized"
+        });
+    }
+
+    next();
+}
+
+/*
+|--------------------------------------------------------------------------
+| Health
+|--------------------------------------------------------------------------
+*/
+
+app.get(
+    "/",
+    (req, res) => {
+        res.json({
+            status: "ok",
+            service:
+                "FORGE License API"
+        });
+    }
+);
+
+app.get(
+    "/health",
+    (req, res) => {
+        res.json({
+            status: "ok",
+            service:
+                "FORGE License API",
+            database:
+                DATABASE_PATH,
+            payment_provider:
+                FLW_SECRET_KEY
+                    ? "flutterwave"
+                    : "not_configured"
+        });
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Admin: issue license
+|--------------------------------------------------------------------------
+*/
+
+app.post(
+    "/license/issue",
+    requireAdmin,
+    (req, res) => {
+        try {
+            const product =
+                req.body?.product ||
+                PRODUCT;
+
+            const plan =
+                req.body?.plan ||
+                PLAN;
+
+            const license =
+                issueLicenseInternal(
+                    product,
+                    plan
+                );
+
+            return res
+                .status(201)
+                .json({
+                    id: license.id,
+                    key:
+                        license.license_key,
+                    product:
+                        license.product,
+                    plan:
+                        license.plan,
+                    status:
+                        license.status,
+                    created_at:
+                        license.created_at,
+                    expires_at:
+                        license.expires_at,
+                    activations: []
+                });
+        } catch (error) {
+            console.error(
+                "License issue error:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "license_issue_failed"
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| License validation
+|--------------------------------------------------------------------------
+*/
+
+app.post(
+    "/license/validate",
+    (req, res) => {
+        try {
+            const licenseKey =
+                req.body?.license_key;
+
+            const license =
+                findLicense(
+                    licenseKey
+                );
+
+            if (!license) {
+                return res
+                    .status(404)
+                    .json({
+                        valid: false,
+                        error:
+                            "license_not_found"
+                    });
+            }
+
+            if (
+                license.status !==
+                "active"
+            ) {
+                return res
+                    .status(403)
+                    .json({
+                        valid: false,
+                        error:
+                            "license_inactive",
+                        status:
+                            license.status
+                    });
+            }
+
+            if (
+                license.expires_at &&
+                new Date(
+                    license.expires_at
+                ) <= new Date()
+            ) {
+                return res
+                    .status(403)
+                    .json({
+                        valid: false,
+                        error:
+                            "license_expired"
+                    });
+            }
+
+            return res.json({
+                valid: true,
+                product:
+                    license.product,
+                plan:
+                    license.plan,
+                status:
+                    license.status,
+                expires_at:
+                    license.expires_at
+            });
+        } catch (error) {
+            console.error(
+                "License validation error:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "license_validation_failed"
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| License activation
+|--------------------------------------------------------------------------
+*/
+
+app.post(
+    "/license/activate",
+    (req, res) => {
+        try {
+            const licenseKey =
+                req.body?.license_key;
+
+            const machineId =
+                normalizeMachineId(
+                    req.body?.machine_id
+                );
+
+            if (
+                !licenseKey ||
+                !machineId
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "license_key_and_machine_id_required"
+                    });
+            }
+
+            const license =
+                findLicense(
+                    licenseKey
+                );
+
+            if (!license) {
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            "license_not_found"
+                    });
+            }
+
+            if (
+                license.status !==
+                "active"
+            ) {
+                return res
+                    .status(403)
+                    .json({
+                        error:
+                            "license_inactive",
+                        status:
+                            license.status
+                    });
+            }
+
+            if (
+                license.expires_at &&
+                new Date(
+                    license.expires_at
+                ) <= new Date()
+            ) {
+                return res
+                    .status(403)
+                    .json({
+                        error:
+                            "license_expired"
+                    });
+            }
+
+            const existing =
+                db
+                    .prepare(`
+                        SELECT *
+                        FROM activations
+                        WHERE license_id = ?
+                          AND machine_id = ?
+                    `)
+                    .get(
+                        license.id,
+                        machineId
+                    );
+
+            if (existing) {
+                db.prepare(`
+                    UPDATE activations
+                    SET last_seen_at = ?
+                    WHERE id = ?
+                `).run(
+                    now(),
+                    existing.id
+                );
+
+                const count =
+                    db
+                        .prepare(`
+                            SELECT COUNT(*) AS count
+                            FROM activations
+                            WHERE license_id = ?
+                        `)
+                        .get(
+                            license.id
+                        ).count;
+
+                return res.json({
+                    valid: true,
+                    activated: true,
+                    existing: true,
+                    product:
+                        license.product,
+                    plan:
+                        license.plan,
+                    activation_count:
+                        count,
+                    activation_limit:
+                        MAX_ACTIVATIONS
+                });
+            }
+
+            const activationCount =
+                db
+                    .prepare(`
+                        SELECT COUNT(*) AS count
+                        FROM activations
+                        WHERE license_id = ?
+                    `)
+                    .get(
+                        license.id
+                    ).count;
+
+            if (
+                activationCount >=
+                MAX_ACTIVATIONS
+            ) {
+                return res
+                    .status(403)
+                    .json({
+                        valid: true,
+                        activated: false,
+                        error:
+                            "activation_limit_reached",
+                        activation_count:
+                            activationCount,
+                        activation_limit:
+                            MAX_ACTIVATIONS
+                    });
+            }
+
+            db.prepare(`
+                INSERT INTO activations (
+                    id,
+                    license_id,
+                    machine_id,
+                    activated_at,
+                    last_seen_at
+                )
+                VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
+            `).run(
+                randomId(),
+                license.id,
+                machineId,
+                now(),
+                now()
+            );
+
+            return res.json({
+                valid: true,
+                activated: true,
+                existing: false,
+                product:
+                    license.product,
+                plan:
+                    license.plan,
+                activation_count:
+                    activationCount + 1,
+                activation_limit:
+                    MAX_ACTIVATIONS
+            });
+        } catch (error) {
+            console.error(
+                "License activation error:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "license_activation_failed"
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Admin: inspect license
+|--------------------------------------------------------------------------
+*/
+
+app.get(
+    "/admin/license/:key",
+    requireAdmin,
+    (req, res) => {
+        try {
+            const license =
+                findLicense(
+                    req.params.key
+                );
+
+            if (!license) {
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            "license_not_found"
+                    });
+            }
+
+            const activations =
+                db
+                    .prepare(`
+                        SELECT
+                            id,
+                            machine_id,
+                            activated_at,
+                            last_seen_at
+                        FROM activations
+                        WHERE license_id = ?
+                        ORDER BY activated_at ASC
+                    `)
+                    .all(
+                        license.id
+                    );
+
+            return res.json({
+                id: license.id,
+                product:
+                    license.product,
+                plan:
+                    license.plan,
+                status:
+                    license.status,
+                created_at:
+                    license.created_at,
+                expires_at:
+                    license.expires_at,
+                activation_count:
+                    activations.length,
+                activation_limit:
+                    MAX_ACTIVATIONS,
+                activations
+            });
+        } catch (error) {
+            console.error(
+                "Admin license lookup error:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "license_lookup_failed"
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Admin: revoke license
+|--------------------------------------------------------------------------
+*/
+
+app.post(
+    "/admin/license/:key/revoke",
+    requireAdmin,
+    (req, res) => {
+        try {
+            const license =
+                findLicense(
+                    req.params.key
+                );
+
+            if (!license) {
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            "license_not_found"
+                    });
+            }
+
+            db.prepare(`
+                UPDATE licenses
+                SET status = 'revoked'
+                WHERE id = ?
+            `).run(
+                license.id
+            );
+
+            return res.json({
+                success: true,
+                id: license.id,
+                status: "revoked"
+            });
+        } catch (error) {
+            console.error(
+                "License revoke error:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "license_revoke_failed"
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Customer helper
+|--------------------------------------------------------------------------
+*/
+
+function getOrCreateCustomer(
+    email,
+    name = null
+) {
+    const normalized =
+        normalizeEmail(email);
+
+    let customer =
+        db
+            .prepare(`
+                SELECT *
+                FROM customers
+                WHERE email = ?
+            `)
+            .get(normalized);
+
+    if (customer) {
+        return customer;
+    }
+
+    const id = randomId();
+    const createdAt = now();
+
+    db.prepare(`
+        INSERT INTO customers (
+            id,
+            email,
+            name,
+            created_at
+        )
+        VALUES (
+            ?,
+            ?,
+            ?,
+            ?
+        )
+    `).run(
+        id,
+        normalized,
+        name,
+        createdAt
+    );
+
+    return db
+        .prepare(`
+            SELECT *
+            FROM customers
+            WHERE id = ?
+        `)
+        .get(id);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Checkout creation
+|--------------------------------------------------------------------------
+*/
+
+app.post(
+    "/checkout/create",
+    (req, res) => {
+        try {
+            const email =
+                normalizeEmail(
+                    req.body?.email
+                );
+
+            const name =
+                String(
+                    req.body?.name || ""
+                ).trim();
+
+            if (!validEmail(email)) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "valid_email_required"
+                    });
+            }
+
+            if (
+                !FLW_PUBLIC_KEY
+            ) {
+                console.error(
+                    "Checkout rejected: FLW_PUBLIC_KEY is missing"
+                );
+
+                return res
+                    .status(503)
+                    .json({
+                        error:
+                            "payment_provider_not_configured"
+                    });
+            }
+
+            if (
+                !Number.isFinite(
+                    PRICE
+                ) ||
+                PRICE <= 0
+            ) {
+                console.error(
+                    "Checkout rejected: invalid FORGE_PRICE:",
+                    PRICE
+                );
+
+                return res
+                    .status(500)
+                    .json({
+                        error:
+                            "invalid_product_price"
+                    });
+            }
+
+            if (!CURRENCY) {
+                return res
+                    .status(500)
+                    .json({
+                        error:
+                            "invalid_currency"
+                    });
+            }
+
+            const customer =
+                getOrCreateCustomer(
+                    email,
+                    name || null
+                );
+
+            const orderId =
+                randomId();
+
+            const txRef =
+                generateTxRef();
+
+            const createdAt =
+                now();
+
+            db.prepare(`
+                INSERT INTO orders (
+                    id,
+                    customer_id,
+                    product,
+                    plan,
+                    amount,
+                    currency,
+                    status,
+                    license_id,
+                    provider,
+                    provider_reference,
+                    created_at,
+                    updated_at
+                )
+                VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    'pending',
+                    NULL,
+                    'flutterwave',
+                    ?,
+                    ?,
+                    ?
+                )
+            `).run(
+                orderId,
+                customer.id,
+                PRODUCT,
+                PLAN,
+                PRICE,
+                CURRENCY,
+                txRef,
+                createdAt,
+                createdAt
+            );
+
+            return res
+                .status(201)
+                .json({
+                    order_id:
+                        orderId,
+                    tx_ref:
+                        txRef,
+                    product:
+                        PRODUCT,
+                    plan:
+                        PLAN,
+                    amount:
+                        PRICE,
+                    currency:
+                        CURRENCY,
+                    public_key:
+                        FLW_PUBLIC_KEY
+                });
+        } catch (error) {
+            console.error(
+                "Checkout creation error:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "checkout_creation_failed",
+                detail:
+                    process.env.NODE_ENV ===
+                    "development"
+                        ? error.message
+                        : undefined
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Admin: order lookup
+|--------------------------------------------------------------------------
+*/
+
+app.get(
+    "/admin/order/:id",
+    requireAdmin,
+    (req, res) => {
+        try {
+            const order =
+                db
+                    .prepare(`
+                        SELECT
+                            o.*,
+                            c.email,
+                            c.name
+                        FROM orders o
+                        JOIN customers c
+                            ON c.id =
+                               o.customer_id
+                        WHERE o.id = ?
+                    `)
+                    .get(
+                        req.params.id
+                    );
+
+            if (!order) {
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            "order_not_found"
+                    });
+            }
+
+            return res.json(order);
+        } catch (error) {
+            console.error(
+                "Order lookup error:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "order_lookup_failed"
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Flutterwave webhook
+|--------------------------------------------------------------------------
+*/
+
+app.post(
+    "/webhooks/flutterwave",
+    (req, res) => {
+        try {
+            const suppliedHash =
+                req.headers[
+                    "verif-hash"
+                ];
+
+            if (
+                !FLW_SECRET_HASH ||
+                !suppliedHash ||
+                !safeCompare(
+                    suppliedHash,
+                    FLW_SECRET_HASH
+                )
+            ) {
+                return res
+                    .status(401)
+                    .json({
+                        error:
+                            "invalid_webhook_signature"
+                    });
+            }
+
+            const payload =
+                req.body || {};
+
+            const data =
+                payload.data || {};
+
+            const txId =
+                String(
+                    data.id ||
+                    data.transaction_id ||
+                    ""
+                );
+
+            const txRef =
+                String(
+                    data.tx_ref ||
+                    data.txRef ||
+                    ""
+                );
+
+            const status =
+                String(
+                    data.status || ""
+                ).toLowerCase();
+
+            if (!txRef) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "missing_transaction_reference"
+                    });
+            }
+
+            const order =
+                db
+                    .prepare(`
+                        SELECT *
+                        FROM orders
+                        WHERE provider_reference = ?
+                    `)
+                    .get(txRef);
+
+            if (!order) {
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            "order_not_found"
+                    });
+            }
+
+            if (
+                order.status ===
+                "paid"
+            ) {
+                return res.status(200).json({
+                    received: true,
+                    duplicate: true
+                });
+            }
+
+            if (
+                status !==
+                    "successful" &&
+                status !==
+                    "completed"
+            ) {
+                db.prepare(`
+                    UPDATE orders
+                    SET
+                        status = ?,
+                        updated_at = ?
+                    WHERE id = ?
+                `).run(
+                    status || "failed",
+                    now(),
+                    order.id
+                );
+
+                return res.status(200).json({
+                    received: true,
+                    payment_status:
+                        status
+                });
+            }
+
+            const amount =
+                Number(
+                    data.amount
+                );
+
+            const currency =
+                String(
+                    data.currency || ""
+                ).toUpperCase();
+
+            if (
+                !Number.isFinite(
+                    amount
+                ) ||
+                amount !==
+                    Number(
+                        order.amount
+                    )
+            ) {
+                db.prepare(`
+                    UPDATE orders
+                    SET
+                        status =
+                            'amount_mismatch',
+                        updated_at = ?
+                    WHERE id = ?
+                `).run(
+                    now(),
+                    order.id
+                );
+
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "payment_amount_mismatch"
+                    });
+            }
+
+            if (
+                currency !==
+                String(
+                    order.currency
+                ).toUpperCase()
+            ) {
+                db.prepare(`
+                    UPDATE orders
+                    SET
+                        status =
+                            'currency_mismatch',
+                        updated_at = ?
+                    WHERE id = ?
+                `).run(
+                    now(),
+                    order.id
+                );
+
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "payment_currency_mismatch"
+                    });
+            }
+
+            const transaction =
+                db.transaction(() => {
+                    const license =
+                        issueLicenseInternal(
+                            order.product,
+                            order.plan
+                        );
+
+                    db.prepare(`
+                        INSERT INTO payments (
+                            id,
+                            order_id,
+                            provider,
+                            provider_transaction_id,
+                            amount,
+                            currency,
+                            status,
+                            raw_event,
+                            created_at
+                        )
+                        VALUES (
+                            ?,
+                            ?,
+                            'flutterwave',
+                            ?,
+                            ?,
+                            ?,
+                            'successful',
+                            ?,
+                            ?
+                        )
+                    `).run(
+                        randomId(),
+                        order.id,
+                        txId || null,
+                        amount,
+                        currency,
+                        JSON.stringify(
+                            payload
+                        ),
+                        now()
+                    );
+
+                    db.prepare(`
+                        UPDATE orders
+                        SET
+                            status = 'paid',
+                            license_id = ?,
+                            updated_at = ?
+                        WHERE id = ?
+                    `).run(
+                        license.id,
+                        now(),
+                        order.id
+                    );
+
+                    return license;
+                });
+
+            const license =
+                transaction();
+
+            return res
+                .status(200)
+                .json({
+                    received: true,
+                    paid: true,
+                    order_id:
+                        order.id,
+                    license: {
+                        key:
+                            license.license_key,
+                        product:
+                            license.product,
+                        plan:
+                            license.plan,
+                        status:
+                            license.status
+                    }
+                });
+        } catch (error) {
+            console.error(
+                "Flutterwave webhook error:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "payment_processing_failed"
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Admin: payment lookup
+|--------------------------------------------------------------------------
+*/
+
+app.get(
+    "/admin/payment/:id",
+    requireAdmin,
+    (req, res) => {
+        try {
+            const payment =
+                db
+                    .prepare(`
+                        SELECT *
+                        FROM payments
+                        WHERE id = ?
+                    `)
+                    .get(
+                        req.params.id
+                    );
+
+            if (!payment) {
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            "payment_not_found"
+                    });
+            }
+
+            return res.json(payment);
+        } catch (error) {
+            console.error(
+                "Payment lookup error:",
+                error
+            );
+
+            return res.status(500).json({
+                error:
+                    "payment_lookup_failed"
+            });
+        }
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| 404
+|--------------------------------------------------------------------------
+*/
+
+app.use(
+    (req, res) => {
+        return res
+            .status(404)
+            .json({
+                error: "not_found"
+            });
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Error handler
+|--------------------------------------------------------------------------
+*/
+
+app.use(
+    (error, req, res, next) => {
+        console.error(
+            "Unhandled server error:",
+            error
+        );
+
+        if (
+            res.headersSent
+        ) {
+            return next(error);
+        }
+
+        return res
+            .status(500)
+            .json({
+                error:
+                    "internal_server_error"
+            });
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Start
+|--------------------------------------------------------------------------
+*/
+
+const server =
+    app.listen(
+        PORT,
+        () => {
+            console.log(
+                `FORGE License API listening on port ${PORT}`
+            );
+
+            console.log(
+                `Database: ${DATABASE_PATH}`
+            );
+
+            console.log(
+                `Maximum activations per license: ${MAX_ACTIVATIONS}`
+            );
+
+            console.log(
+                `Payment provider: ${
+                    FLW_SECRET_KEY
+                        ? "Flutterwave configured"
+                        : "not configured"
+                }`
+            );
+        }
+    );
+
+/*
+|--------------------------------------------------------------------------
+| Shutdown
+|--------------------------------------------------------------------------
+*/
+
+function shutdown(signal) {
+    console.log(
+        `${signal} received. Shutting down...`
+    );
+
+    server.close(() => {
+        db.close();
+        process.exit(0);
+    });
+}
+
+process.on(
+    "SIGINT",
+    () => shutdown("SIGINT")
+);
+
+process.on(
+    "SIGTERM",
+    () => shutdown("SIGTERM")
+);
+```

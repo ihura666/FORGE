@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>FORGE Pro | Purchase</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background: #05070a;
+            color: #f4f7fb;
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .shell {
+            width: 100%;
+            max-width: 1080px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid #1b222c;
+            background: #090d12;
+            box-shadow:
+                0 30px 100px rgba(0, 0, 0, 0.65);
+        }
+
+        .left,
+        .right {
+            padding: 48px;
+        }
+
+        .left {
+            border-right: 1px solid #1b222c;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 60px;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.22em;
+        }
+
+        .brand-mark {
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            box-shadow:
+                0 0 18px rgba(255, 255, 255, 0.7);
+        }
+
+        .eyebrow {
+            color: #7e8b9c;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 12px 0 20px;
+            font-size: clamp(42px, 6vw, 72px);
+            line-height: 0.95;
+            letter-spacing: -0.055em;
+        }
+
+        .description {
+            max-width: 460px;
+            color: #9aa7b7;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .features {
+            margin-top: 42px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .feature {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            color: #c8d0da;
+            font-size: 14px;
+        }
+
+        .feature::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            flex: 0 0 auto;
+            background: #ffffff;
+        }
+
+        .right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .price {
+            margin: 12px 0 8px;
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .price span {
+            color: #7e8b9c;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0;
+        }
+
+        .plan {
+            margin-bottom: 32px;
+            color: #7e8b9c;
+            font-size: 13px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aab5c2;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            height: 52px;
+            margin-bottom: 20px;
+            padding: 0 16px;
+            border: 1px solid #27303b;
+            outline: none;
+            background: #05070a;
+            color: #ffffff;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #657386;
+        }
+
+        button {
+            width: 100%;
+            height: 56px;
+            border: 0;
+            cursor: pointer;
+            background: #ffffff;
+            color: #05070a;
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition:
+                transform 0.15s ease,
+                opacity 0.15s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+            transform: none;
+        }
+
+        .status {
+            min-height: 22px;
+            margin-top: 18px;
+            color: #8996a6;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .secure {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #1b222c;
+            color: #5f6b79;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 0;
+            }
+
+            .shell {
+                min-height: 100vh;
+                grid-template-columns: 1fr;
+                border: 0;
+            }
+
+            .left {
+                border-right: 0;
+                border-bottom: 1px solid #1b222c;
+            }
+
+            .left,
+            .right {
+                padding: 32px 24px;
+            }
+
+            .brand {
+                margin-bottom: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="shell">
+
+    <section class="left">
+
+        <div class="brand">
+            <span class="brand-mark"></span>
+            FORGE
+        </div>
+
+        <div class="eyebrow">
+            Professional Edition
+        </div>
+
+        <h1>
+            FORGE<br>
+            PRO
+        </h1>
+
+        <p class="description">
+            High-performance dictionary generation
+            with controlled traversal, generation
+            modes, candidate limits and persistent
+            commercial licensing.
+        </p>
+
+        <div class="features">
+
+            <div class="feature">
+                Smart generation
+            </div>
+
+            <div class="feature">
+                Exhaustive generation
+            </div>
+
+            <div class="feature">
+                Scrambled generation
+            </div>
+
+            <div class="feature">
+                Configurable candidate limits
+            </div>
+
+            <div class="feature">
+                Two-machine activation
+            </div>
+
+            <div class="feature">
+                Commercial license
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="right">
+
+        <div class="eyebrow">
+            FORGE PRO
+        </div>
+
+        <div class="price">
+            KES 4,000
+            <span>one-time</span>
+        </div>
+
+        <div class="plan">
+            Immediate digital delivery after successful payment.
+        </div>
+
+        <form id="checkoutForm">
+
+            <label for="name">
+                Name
+            </label>
+
+            <input
+                id="name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                placeholder="Your name"
+            >
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                required
+            >
+
+            <button
+                id="checkoutButton"
+                type="submit"
+            >
+                Purchase FORGE Pro
+            </button>
+
+        </form>
+
+        <div
+            id="status"
+            class="status"
+            role="status"
+            aria-live="polite"
+        ></div>
+
+        <div class="secure">
+            Payment processing is handled by Paystack.
+            FORGE does not receive or store your card
+            credentials.
+        </div>
+
+    </section>
+
+</div>
+
+<script>
+"use strict";
+
+const API_BASE =
+    "http://127.0.0.1:8787";
+
+const form =
+    document.getElementById(
+        "checkoutForm"
+    );
+
+const button =
+    document.getElementById(
+        "checkoutButton"
+    );
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+function setStatus(message) {
+    status.textContent = message;
+}
+
+form.addEventListener(
+    "submit",
+    async event => {
+
+        event.preventDefault();
+
+        const name =
+            document
+                .getElementById("name")
+                .value
+                .trim();
+
+        const email =
+            document
+                .getElementById("email")
+                .value
+                .trim();
+
+        if (!email) {
+            setStatus(
+                "Enter a valid email address."
+            );
+
+            return;
+        }
+
+        button.disabled = true;
+
+        setStatus(
+            "Creating secure checkout..."
+        );
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/checkout/create`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                name,
+                                email
+                            })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error ||
+                    "Unable to create checkout."
+                );
+            }
+
+            if (
+                !data.authorization_url
+            ) {
+                throw new Error(
+                    "Paystack authorization URL was not returned."
+                );
+            }
+
+            setStatus(
+                "Redirecting to Paystack..."
+            );
+
+            window.location.href =
+                data.authorization_url;
+
+        } catch (error) {
+
+            console.error(
+                "Checkout error:",
+                error
+            );
+
+            setStatus(
+                error.message ||
+                "Checkout failed."
+            );
+
+            button.disabled = false;
+        }
+    }
+);
+</script>
+
+</body>
+</html>
