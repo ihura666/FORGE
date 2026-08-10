@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FORGE | Download</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+
+            background: #050505;
+            color: #f4f4f4;
+
+            font-family:
+                Inter,
+                system-ui,
+                sans-serif;
+        }
+
+        nav {
+            height: 72px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 34px;
+
+            border-bottom: 1px solid #202020;
+        }
+
+        nav a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .brand {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 5px;
+        }
+
+        main {
+            flex: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 80px 24px;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 700px;
+
+            padding: 55px 35px;
+
+            border: 1px solid #292929;
+            border-radius: 16px;
+
+            background: #0a0a0a;
+
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 15px;
+
+            font-size:
+                clamp(40px, 7vw, 70px);
+        }
+
+        p {
+            max-width: 570px;
+
+            margin:
+                0 auto
+                30px;
+
+            color: #777;
+            line-height: 1.7;
+        }
+
+        .notice {
+            padding: 20px;
+
+            margin-bottom: 25px;
+
+            border: 1px solid #222;
+            border-radius: 9px;
+
+            color: #888;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .button {
+            display: inline-block;
+
+            padding:
+                14px
+                24px;
+
+            border-radius: 8px;
+
+            background: #f2f2f2;
+            color: #050505;
+
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        footer {
+            padding: 30px;
+
+            border-top: 1px solid #181818;
+
+            color: #555;
+
+            text-align: center;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+
+    <a
+        class="brand"
+        href="/"
+    >
+        FORGE
+    </a>
+
+    <a href="/pricing/">
+        Get Pro
+    </a>
+
+</nav>
+
+
+<main>
+
+    <section class="box">
+
+        <h1>
+            FORGE
+        </h1>
+
+        <p>
+            Download the official FORGE release after
+            purchasing your commercial license.
+        </p>
+
+        <div class="notice">
+            Your download distribution endpoint will be
+            connected here when the release artifact is
+            deployed. The public website does not expose
+            private repository files.
+        </div>
+
+        <a
+            class="button"
+            href="/pricing/"
+        >
+            Purchase FORGE Pro
+        </a>
+
+    </section>
+
+</main>
+
+
+<footer>
+    FORGE © 2026
+</footer>
+
+</body>
+</html>
