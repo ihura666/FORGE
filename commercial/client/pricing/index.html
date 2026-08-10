@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FORGE Pro pricing and purchase.">
+    <title>FORGE Pro | Pricing</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #050505;
+            color: #f4f4f4;
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 72px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 34px;
+
+            background: rgba(5, 5, 5, .95);
+            border-bottom: 1px solid #202020;
+
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+        }
+
+        .brand {
+            text-decoration: none;
+            font-weight: 900;
+            letter-spacing: 5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 0;
+            border-radius: 8px;
+
+            padding: 13px 22px;
+
+            background: #f2f2f2;
+            color: #050505;
+
+            font-size: 14px;
+            font-weight: 800;
+
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background: #fff;
+        }
+
+        main {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 120px 24px 70px;
+        }
+
+        .pricing {
+            width: 100%;
+            max-width: 1050px;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .heading span {
+            color: #666;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .heading h1 {
+            margin: 16px 0 12px;
+
+            font-size:
+                clamp(42px, 7vw, 72px);
+        }
+
+        .heading p {
+            max-width: 600px;
+            margin: auto;
+
+            color: #777;
+            line-height: 1.7;
+        }
+
+        .card {
+            max-width: 520px;
+            margin: auto;
+
+            padding: 42px;
+
+            border: 1px solid #333;
+            border-radius: 18px;
+
+            background: #0a0a0a;
+            box-shadow: 0 30px 80px rgba(0,0,0,.35);
+        }
+
+        .plan {
+            color: #777;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .price {
+            margin: 14px 0 5px;
+
+            font-size: 60px;
+            font-weight: 900;
+        }
+
+        .currency {
+            color: #888;
+            font-size: 15px;
+        }
+
+        .description {
+            margin:
+                25px 0
+                30px;
+
+            color: #777;
+            line-height: 1.7;
+        }
+
+        ul {
+            padding: 0;
+            margin: 0 0 30px;
+            list-style: none;
+        }
+
+        li {
+            padding:
+                12px
+                0;
+
+            border-bottom: 1px solid #181818;
+
+            color: #bbb;
+        }
+
+        li::before {
+            content: "✓";
+            margin-right: 12px;
+            color: #888;
+        }
+
+        .purchase {
+            width: 100%;
+        }
+
+        .status {
+            min-height: 24px;
+            margin-top: 18px;
+
+            color: #888;
+
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        footer {
+            padding: 30px;
+            border-top: 1px solid #181818;
+
+            color: #555;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+            .nav {
+                padding: 0 18px;
+            }
+
+            .nav-links a:not(.nav-button) {
+                display: none;
+            }
+
+            .card {
+                padding: 28px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="nav">
+
+    <a class="brand" href="/">
+        FORGE
+    </a>
+
+    <div class="nav-links">
+        <a href="/">
+            Home
+        </a>
+
+        <a href="/download/">
+            Download
+        </a>
+
+        <a class="nav-button" href="/pricing/">
+            Pro
+        </a>
+    </div>
+
+</nav>
+
+
+<main>
+
+    <section class="pricing">
+
+        <div class="heading">
+
+            <span>
+                Commercial License
+            </span>
+
+            <h1>
+                FORGE Pro
+            </h1>
+
+            <p>
+                One professional license for the complete
+                FORGE Pro release.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="plan">
+                FORGE PRO
+            </div>
+
+            <div class="price">
+                KES 4,000
+            </div>
+
+            <div class="currency">
+                One-time purchase
+            </div>
+
+            <p class="description">
+                Purchase your license through Paystack.
+                After successful payment, your license is
+                issued automatically.
+            </p>
+
+
+            <ul>
+
+                <li>
+                    Full FORGE Pro release
+                </li>
+
+                <li>
+                    License activation
+                </li>
+
+                <li>
+                    Up to 2 machines
+                </li>
+
+                <li>
+                    Controlled candidate generation
+                </li>
+
+                <li>
+                    Smart, scrambled and exhaustive modes
+                </li>
+
+                <li>
+                    Configurable generation limits
+                </li>
+
+            </ul>
+
+
+            <form id="checkoutForm">
+
+                <label
+                    for="name"
+                    style="display:block;margin-bottom:7px;color:#888;font-size:13px;"
+                >
+                    Name
+                </label>
+
+                <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    placeholder="Your name"
+                    required
+                    style="
+                        width:100%;
+                        padding:13px;
+                        margin-bottom:17px;
+                        border:1px solid #292929;
+                        border-radius:7px;
+                        background:#050505;
+                        color:#fff;
+                        outline:none;
+                    "
+                >
+
+                <label
+                    for="email"
+                    style="display:block;margin-bottom:7px;color:#888;font-size:13px;"
+                >
+                    Email
+                </label>
+
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    placeholder="you@example.com"
+                    required
+                    style="
+                        width:100%;
+                        padding:13px;
+                        margin-bottom:20px;
+                        border:1px solid #292929;
+                        border-radius:7px;
+                        background:#050505;
+                        color:#fff;
+                        outline:none;
+                    "
+                >
+
+                <button
+                    class="button purchase"
+                    type="submit"
+                    id="purchaseButton"
+                >
+                    Purchase FORGE Pro
+                </button>
+
+            </form>
+
+            <div
+                class="status"
+                id="status"
+            ></div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    FORGE © 2026
+</footer>
+
+
+<script>
+"use strict";
+
+const API_BASE = "http://127.0.0.1:8787";
+
+const form =
+    document.getElementById("checkoutForm");
+
+const button =
+    document.getElementById("purchaseButton");
+
+const status =
+    document.getElementById("status");
+
+
+function setStatus(message) {
+    status.textContent = message;
+}
+
+
+form.addEventListener("submit", async event => {
+
+    event.preventDefault();
+
+    button.disabled = true;
+
+    button.textContent =
+        "Creating secure checkout...";
+
+    setStatus("");
+
+    const name =
+        document
+            .getElementById("name")
+            .value
+            .trim();
+
+    const email =
+        document
+            .getElementById("email")
+            .value
+            .trim();
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE + "/checkout/create",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            name,
+                            email
+                        })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ||
+                "Unable to create checkout."
+            );
+        }
+
+        if (!data.authorization_url) {
+            throw new Error(
+                "Paystack checkout URL was not returned."
+            );
+        }
+
+        window.location.href =
+            data.authorization_url;
+
+    } catch (error) {
+
+        console.error(error);
+
+        setStatus(
+            error.message ||
+            "Unable to start payment."
+        );
+
+        button.disabled = false;
+
+        button.textContent =
+            "Purchase FORGE Pro";
+    }
+
+});
+</script>
+
+</body>
+</html>

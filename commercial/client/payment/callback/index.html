@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>FORGE | Payment Status</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 24px;
+
+            background: #050505;
+            color: #f4f4f4;
+
+            font-family:
+                Inter,
+                system-ui,
+                sans-serif;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 600px;
+
+            padding: 45px 30px;
+
+            border:
+                1px solid #292929;
+
+            border-radius: 15px;
+
+            background: #0a0a0a;
+
+            text-align: center;
+        }
+
+        .brand {
+            margin-bottom: 30px;
+
+            font-size: 22px;
+            font-weight: 900;
+
+            letter-spacing: 5px;
+        }
+
+        h1 {
+            margin: 0 0 14px;
+
+            font-size: 34px;
+        }
+
+        p {
+            margin: 0;
+
+            color: #777;
+
+            line-height: 1.7;
+        }
+
+        .status {
+            margin-top: 25px;
+
+            min-height: 28px;
+
+            color: #aaa;
+        }
+
+        .reference {
+            margin-top: 18px;
+
+            padding: 12px;
+
+            border-radius: 7px;
+
+            background: #050505;
+
+            color: #666;
+
+            font-family: monospace;
+            font-size: 12px;
+
+            word-break: break-all;
+        }
+
+        .button {
+            display: inline-block;
+
+            margin-top: 28px;
+
+            padding:
+                13px
+                22px;
+
+            border-radius: 8px;
+
+            background: #f2f2f2;
+            color: #050505;
+
+            text-decoration: none;
+
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <div class="brand">
+        FORGE
+    </div>
+
+    <h1 id="title">
+        Checking payment
+    </h1>
+
+    <p id="message">
+        Confirming your transaction with the FORGE
+        licensing service.
+    </p>
+
+    <div
+        class="status"
+        id="status"
+    >
+        Please wait...
+    </div>
+
+    <div
+        class="reference"
+        id="reference"
+    ></div>
+
+    <a
+        class="button"
+        href="/"
+    >
+        Return to FORGE
+    </a>
+
+</div>
+
+
+<script>
+"use strict";
+
+const API_BASE =
+    "http://127.0.0.1:8787";
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const reference =
+    params.get("reference") ||
+    params.get("trxref") ||
+    "";
+
+const title =
+    document.getElementById("title");
+
+const message =
+    document.getElementById("message");
+
+const status =
+    document.getElementById("status");
+
+const referenceBox =
+    document.getElementById("reference");
+
+
+referenceBox.textContent =
+    reference
+        ? "Reference: " + reference
+        : "";
+
+
+async function checkPayment() {
+
+    if (!reference) {
+
+        title.textContent =
+            "Payment reference missing";
+
+        message.textContent =
+            "The payment callback did not contain a transaction reference.";
+
+        status.textContent = "";
+
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE +
+                "/checkout/status/" +
+                encodeURIComponent(
+                    reference
+                )
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ||
+                "Unable to check payment."
+            );
+        }
+
+        if (data.status === "paid") {
+
+            title.textContent =
+                "Payment successful";
+
+            message.textContent =
+                "Your FORGE Pro payment has been confirmed.";
+
+            status.textContent =
+                data.license_issued
+                    ? "Your license has been issued."
+                    : "Your payment has been recorded.";
+
+            return;
+        }
+
+        if (
+            data.status === "pending"
+        ) {
+
+            title.textContent =
+                "Payment processing";
+
+            message.textContent =
+                "Your transaction has not been marked as paid yet.";
+
+            status.textContent =
+                "This page will check again shortly.";
+
+            setTimeout(
+                checkPayment,
+                3000
+            );
+
+            return;
+        }
+
+        title.textContent =
+            "Payment not completed";
+
+        message.textContent =
+            "The transaction is currently marked as: " +
+            data.status;
+
+        status.textContent =
+            "Return to pricing if you need to try again.";
+
+    } catch (error) {
+
+        console.error(error);
+
+        title.textContent =
+            "Unable to verify payment";
+
+        message.textContent =
+            "The licensing service could not confirm the transaction.";
+
+        status.textContent =
+            error.message ||
+            "Please try again.";
+    }
+}
+
+
+checkPayment();
+</script>
+
+</body>
+</html>
