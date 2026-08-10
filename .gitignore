@@ -10,3 +10,27 @@ __pycache__/
 .idea/
 
 *.swp
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Commercial API data
+commercial/api/data/
+commercial/api/*.db
+commercial/api/*.db-shm
+commercial/api/*.db-wal
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# OS/editor files
+.DS_Store
+
+# Commercial secrets and local database
+commercial/api/.env
+commercial/api/data/*.db
+commercial/api/data/*.db-*
