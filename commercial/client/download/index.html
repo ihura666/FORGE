@@ -2,136 +2,226 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>FORGE | Download</title>
+    <title>Download FORGE | FORGE</title>
+
+    <meta
+        name="description"
+        content="Download the official FORGE release for Linux x86-64."
+    >
+
+    <meta name="robots" content="index, follow">
+
+    <link
+        rel="canonical"
+        href="https://ihura666.github.io/FORGE/download/"
+    >
 
     <style>
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
             min-height: 100vh;
-
-            display: flex;
-            flex-direction: column;
-
             background: #050505;
-            color: #f4f4f4;
-
+            color: #f1f1f1;
             font-family:
                 Inter,
-                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
                 sans-serif;
-        }
-
-        nav {
-            height: 72px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 0 34px;
-
-            border-bottom: 1px solid #202020;
-        }
-
-        nav a {
-            color: #999;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .brand {
-            color: #fff;
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: 5px;
-        }
-
-        main {
-            flex: 1;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: 80px 24px;
-        }
-
-        .box {
-            width: 100%;
-            max-width: 700px;
-
-            padding: 55px 35px;
-
-            border: 1px solid #292929;
-            border-radius: 16px;
-
-            background: #0a0a0a;
-
-            text-align: center;
-        }
-
-        h1 {
-            margin: 0 0 15px;
-
-            font-size:
-                clamp(40px, 7vw, 70px);
-        }
-
-        p {
-            max-width: 570px;
-
-            margin:
-                0 auto
-                30px;
-
-            color: #777;
-            line-height: 1.7;
-        }
-
-        .notice {
-            padding: 20px;
-
-            margin-bottom: 25px;
-
-            border: 1px solid #222;
-            border-radius: 9px;
-
-            color: #888;
-            font-size: 14px;
             line-height: 1.6;
         }
 
-        .button {
-            display: inline-block;
-
-            padding:
-                14px
-                24px;
-
-            border-radius: 8px;
-
-            background: #f2f2f2;
-            color: #050505;
-
-            font-weight: 800;
+        a {
+            color: inherit;
             text-decoration: none;
         }
 
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        nav {
+            border-bottom: 1px solid #1d1d1d;
+            background: #050505;
+        }
+
+        .nav-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+        }
+
+        .brand {
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+        }
+
+        .brand span {
+            color: #888;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+            list-style: none;
+            flex-wrap: wrap;
+            font-size: 0.94rem;
+        }
+
+        .nav-links a {
+            color: #aaa;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #fff;
+        }
+
+        .page {
+            padding: 100px 0;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 6px 12px;
+            border: 1px solid #2b2b2b;
+            border-radius: 999px;
+            color: #888;
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            line-height: 0.98;
+            letter-spacing: -0.05em;
+        }
+
+        .intro {
+            max-width: 680px;
+            margin-top: 22px;
+            color: #8e8e8e;
+            font-size: 1.05rem;
+        }
+
+        .release {
+            margin-top: 50px;
+            padding: 35px;
+            border: 1px solid #242424;
+            border-radius: 12px;
+            background: #090909;
+        }
+
+        .release h2 {
+            margin-bottom: 8px;
+            font-size: 1.5rem;
+        }
+
+        .release-meta {
+            margin-bottom: 28px;
+            color: #777;
+        }
+
+        .download-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 24px;
+            border-radius: 7px;
+            background: #f1f1f1;
+            color: #050505;
+            font-weight: 800;
+        }
+
+        .download-button:hover {
+            background: #fff;
+        }
+
+        .checksums {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #202020;
+            border-radius: 8px;
+            background: #060606;
+        }
+
+        .checksums h3 {
+            margin-bottom: 10px;
+        }
+
+        .checksums a {
+            color: #aaa;
+        }
+
+        .checksums a:hover {
+            color: #fff;
+        }
+
+        .notice {
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
         footer {
-            padding: 30px;
+            margin-top: 30px;
+            padding: 35px 0;
+            border-top: 1px solid #171717;
+            color: #666;
+            font-size: 0.85rem;
+        }
 
-            border-top: 1px solid #181818;
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
 
-            color: #555;
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
 
-            text-align: center;
-            font-size: 13px;
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 700px) {
+            .nav-inner {
+                padding: 16px 0;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .page {
+                padding: 70px 0;
+            }
+
+            .release {
+                padding: 25px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -139,55 +229,142 @@
 <body>
 
 <nav>
-
-    <a
-        class="brand"
-        href="/"
-    >
-        FORGE
-    </a>
-
-    <a href="/pricing/">
-        Get Pro
-    </a>
-
-</nav>
-
-
-<main>
-
-    <section class="box">
-
-        <h1>
-            FORGE
-        </h1>
-
-        <p>
-            Download the official FORGE release after
-            purchasing your commercial license.
-        </p>
-
-        <div class="notice">
-            Your download distribution endpoint will be
-            connected here when the release artifact is
-            deployed. The public website does not expose
-            private repository files.
-        </div>
+    <div class="container nav-inner">
 
         <a
-            class="button"
-            href="/pricing/"
+            class="brand"
+            href="/FORGE/"
+            aria-label="FORGE home"
         >
-            Purchase FORGE Pro
+            FORGE<span>.</span>
         </a>
 
-    </section>
+        <ul class="nav-links">
+
+            <li>
+                <a href="/FORGE/">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="/FORGE/pricing/">
+                    Pricing
+                </a>
+            </li>
+
+            <li>
+                <a
+                    class="active"
+                    href="/FORGE/download/"
+                >
+                    Download
+                </a>
+            </li>
+
+            <li>
+                <a href="/FORGE/pricing/">
+                    Get FORGE Pro
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+</nav>
+
+<main class="page">
+
+    <div class="container">
+
+        <span class="eyebrow">
+            Official Release
+        </span>
+
+        <h1>
+            Download FORGE.
+        </h1>
+
+        <p class="intro">
+            Download the current FORGE Linux x86-64 release.
+            Verify the downloaded executable against the published
+            SHA-256 checksum before running it.
+        </p>
+
+        <section class="release">
+
+            <h2>
+                FORGE v1.0.0
+            </h2>
+
+            <p class="release-meta">
+                Platform: Linux x86-64
+            </p>
+
+            <a
+                class="download-button"
+                href="/FORGE/releases/FORGE-Linux"
+                download
+            >
+                Download FORGE
+            </a>
+
+            <div class="checksums">
+
+                <h3>
+                    SHA-256 Verification
+                </h3>
+
+                <p>
+                    <a
+                        href="/FORGE/releases/SHA256SUMS.txt"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        View SHA256SUMS.txt
+                    </a>
+                </p>
+
+            </div>
+
+            <p class="notice">
+                Verify the checksum before executing the binary.
+                Windows users should use the Windows release when
+                it is published.
+            </p>
+
+        </section>
+
+    </div>
 
 </main>
 
-
 <footer>
-    FORGE © 2026
+
+    <div class="container footer-inner">
+
+        <div>
+            © 2026 FORGE. All rights reserved.
+        </div>
+
+        <div class="footer-links">
+
+            <a href="/FORGE/">
+                Home
+            </a>
+
+            <a href="/FORGE/pricing/">
+                Pricing
+            </a>
+
+            <a href="/FORGE/download/">
+                Download
+            </a>
+
+        </div>
+
+    </div>
+
 </footer>
 
 </body>
