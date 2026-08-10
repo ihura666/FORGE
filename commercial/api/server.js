@@ -1,3 +1,4 @@
+const fs = require("fs");
 "use strict";
 
 require("dotenv").config();
@@ -29,6 +30,11 @@ const MAX_ACTIVATIONS = Math.max(
 
 const DATABASE_PATH = path.resolve(
     process.env.DATABASE_PATH || "./data/forge.db"
+);
+
+fs.mkdirSync(
+    path.dirname(DATABASE_PATH),
+    { recursive: true }
 );
 
 const PAYSTACK_PUBLIC_KEY =
