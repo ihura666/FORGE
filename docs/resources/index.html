@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>FORGE Resources | Password & Word Generation</title>
+
+<meta
+    name="description"
+    content="Learn how FORGE handles controlled password and word generation, candidate construction, wordlists, Linux workflows, and security-focused testing."
+>
+
+<meta name="robots" content="index, follow">
+
+<link
+    rel="canonical"
+    href="https://ihura666.github.io/FORGE/resources/"
+>
+
+<!-- Google Analytics -->
+<script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-2DLFCCZGSL"
+></script>
+
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag("js", new Date());
+
+    gtag("config", "G-2DLFCCZGSL");
+</script>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        min-height: 100vh;
+        background: #050505;
+        color: #f1f1f1;
+        font-family:
+            Inter,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+        line-height: 1.7;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .container {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+    }
+
+    nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+
+        border-bottom: 1px solid #1d1d1d;
+
+        background: rgba(5, 5, 5, 0.94);
+
+        backdrop-filter: blur(12px);
+    }
+
+    .nav-inner {
+        min-height: 72px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 30px;
+    }
+
+    .brand {
+        font-size: 1.35rem;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+    }
+
+    .brand span {
+        color: #888;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+
+        list-style: none;
+
+        font-size: 0.92rem;
+    }
+
+    .nav-links a {
+        color: #999;
+        transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+        color: #fff;
+    }
+
+    .nav-pro {
+        padding: 9px 15px;
+
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+
+        color: #fff !important;
+    }
+
+    main {
+        overflow: hidden;
+    }
+
+    .hero {
+        padding: 120px 0 90px;
+
+        border-bottom: 1px solid #171717;
+    }
+
+    .eyebrow {
+        display: inline-block;
+
+        margin-bottom: 22px;
+        padding: 7px 13px;
+
+        border: 1px solid #2d2d2d;
+        border-radius: 999px;
+
+        color: #999;
+
+        font-size: 0.76rem;
+        font-weight: 700;
+
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+    }
+
+    h1 {
+        max-width: 900px;
+
+        font-size: clamp(3rem, 8vw, 6rem);
+
+        line-height: 0.96;
+        letter-spacing: -0.055em;
+    }
+
+    .hero-intro {
+        max-width: 760px;
+
+        margin-top: 28px;
+
+        color: #999;
+
+        font-size: 1.08rem;
+    }
+
+    .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+
+        margin-top: 35px;
+    }
+
+    .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 145px;
+
+        padding: 13px 21px;
+
+        border: 1px solid #333;
+        border-radius: 7px;
+
+        font-weight: 800;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .button:hover {
+        transform: translateY(-2px);
+        border-color: #666;
+    }
+
+    .button-primary {
+        background: #f1f1f1;
+        color: #050505;
+        border-color: #f1f1f1;
+    }
+
+    .button-primary:hover {
+        background: #fff;
+    }
+
+    .section {
+        padding: 90px 0;
+
+        border-bottom: 1px solid #171717;
+    }
+
+    .section-header {
+        max-width: 760px;
+
+        margin-bottom: 42px;
+    }
+
+    .section-header h2 {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+    }
+
+    .section-header p {
+        margin-top: 15px;
+
+        color: #888;
+    }
+
+    .grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        gap: 18px;
+    }
+
+    .card {
+        min-height: 230px;
+
+        display: flex;
+        flex-direction: column;
+
+        padding: 28px;
+
+        border: 1px solid #202020;
+        border-radius: 10px;
+
+        background: #090909;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        border-color: #3a3a3a;
+    }
+
+    .card-label {
+        margin-bottom: 15px;
+
+        color: #666;
+
+        font-size: 0.72rem;
+        font-weight: 800;
+
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .card h3 {
+        margin-bottom: 10px;
+
+        font-size: 1.18rem;
+
+        letter-spacing: -0.015em;
+    }
+
+    .card p {
+        color: #888;
+
+        font-size: 0.94rem;
+    }
+
+    .card-link {
+        margin-top: auto;
+        padding-top: 24px;
+
+        color: #ccc;
+
+        font-size: 0.9rem;
+        font-weight: 800;
+    }
+
+    .card-link:hover {
+        color: #fff;
+    }
+
+    .definition {
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1.1fr)
+            minmax(0, 0.9fr);
+
+        gap: 30px;
+    }
+
+    .definition-main,
+    .definition-side {
+        padding: 30px;
+
+        border: 1px solid #202020;
+        border-radius: 10px;
+
+        background: #090909;
+    }
+
+    .definition-main h3,
+    .definition-side h3 {
+        margin-bottom: 15px;
+
+        font-size: 1.3rem;
+    }
+
+    .definition-main p,
+    .definition-side p {
+        color: #888;
+    }
+
+    .definition-main p + p,
+    .definition-side p + p {
+        margin-top: 15px;
+    }
+
+    .list {
+        margin-top: 18px;
+
+        list-style: none;
+    }
+
+    .list li {
+        padding: 11px 0;
+
+        border-bottom: 1px solid #181818;
+
+        color: #aaa;
+    }
+
+    .list li::before {
+        content: "✓";
+
+        margin-right: 11px;
+
+        color: #777;
+    }
+
+    .cta {
+        padding: 65px 30px;
+
+        border: 1px solid #252525;
+        border-radius: 12px;
+
+        background: #090909;
+
+        text-align: center;
+    }
+
+    .cta h2 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+
+        line-height: 1;
+
+        letter-spacing: -0.04em;
+    }
+
+    .cta p {
+        max-width: 670px;
+
+        margin: 17px auto 0;
+
+        color: #888;
+    }
+
+    footer {
+        padding: 35px 0;
+
+        color: #666;
+
+        font-size: 0.84rem;
+    }
+
+    .footer-inner {
+        display: flex;
+        justify-content: space-between;
+
+        gap: 20px;
+
+        flex-wrap: wrap;
+    }
+
+    .footer-links {
+        display: flex;
+        gap: 20px;
+
+        flex-wrap: wrap;
+    }
+
+    .footer-links a:hover {
+        color: #fff;
+    }
+
+    @media (max-width: 850px) {
+        .grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .definition {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .nav-inner {
+            min-height: auto;
+
+            padding: 16px 0;
+
+            align-items: flex-start;
+
+            flex-direction: column;
+        }
+
+        .nav-links {
+            width: 100%;
+
+            gap: 14px;
+
+            flex-wrap: wrap;
+        }
+
+        .hero {
+            padding: 80px 0 70px;
+        }
+
+        .section {
+            padding: 70px 0;
+        }
+
+        .grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cta {
+            padding: 50px 22px;
+        }
+
+        .footer-inner {
+            flex-direction: column;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<nav>
+    <div class="container nav-inner">
+
+```
+    <a
+        class="brand"
+        href="/FORGE/"
+        aria-label="FORGE home"
+    >
+        FORGE<span>.</span>
+    </a>
+
+    <ul class="nav-links">
+
+        <li>
+            <a href="/FORGE/">
+                Home
+            </a>
+        </li>
+
+        <li>
+            <a href="/FORGE/guide/">
+                Guide
+            </a>
+        </li>
+
+        <li>
+            <a
+                class="active"
+                href="/FORGE/resources/"
+            >
+                Resources
+            </a>
+        </li>
+
+        <li>
+            <a href="/FORGE/download/">
+                Download
+            </a>
+        </li>
+
+        <li>
+            <a
+                class="nav-pro"
+                href="/FORGE/pricing/"
+            >
+                Get FORGE Pro
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+```
+
+</nav>
+
+<main>
+
+```
+<section class="hero">
+
+    <div class="container">
+
+        <span class="eyebrow">
+            FORGE Resources
+        </span>
+
+        <h1>
+            Understand the engine.
+        </h1>
+
+        <p class="hero-intro">
+            Explore how FORGE approaches controlled password
+            and word generation, candidate construction,
+            wordlists, Linux workflows and authorized
+            security testing.
+        </p>
+
+        <div class="hero-actions">
+
+            <a
+                class="button button-primary"
+                href="/FORGE/guide/"
+            >
+                Read the Guide
+            </a>
+
+            <a
+                class="button"
+                href="/FORGE/download/"
+            >
+                Download FORGE
+            </a>
+
+            <a
+                class="button"
+                href="/FORGE/pricing/"
+            >
+                Explore Pro
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-header">
+
+            <h2>
+                FORGE, explained.
+            </h2>
+
+            <p>
+                These resources break the product into practical
+                concepts so you can understand what FORGE does,
+                where it fits into a security workflow and how
+                its generation controls work.
+            </p>
+
+        </div>
+
+
+        <div class="grid">
+
+            <article class="card">
+
+                <div class="card-label">
+                    Generation
+                </div>
+
+                <h3>
+                    Password Generation
+                </h3>
+
+                <p>
+                    Learn how password candidates can be
+                    constructed from controlled inputs,
+                    variations, transformations and defined
+                    generation rules.
+                </p>
+
+                <a
+                    class="card-link"
+                    href="/FORGE/resources/password-generation/"
+                >
+                    Explore password generation →
+                </a>
+
+            </article>
+
+
+            <article class="card">
+
+                <div class="card-label">
+                    Wordlists
+                </div>
+
+                <h3>
+                    Wordlist Generation
+                </h3>
+
+                <p>
+                    Understand candidate lists, controlled
+                    combinations, traversal strategies,
+                    output limits and reusable generation
+                    workflows.
+                </p>
+
+                <a
+                    class="card-link"
+                    href="/FORGE/resources/wordlist-generation/"
+                >
+                    Explore wordlist generation →
+                </a>
+
+            </article>
+
+
+            <article class="card">
+
+                <div class="card-label">
+                    Platform
+                </div>
+
+                <h3>
+                    FORGE on Linux
+                </h3>
+
+                <p>
+                    Learn about the current Linux x86-64
+                    release, executable workflow, verification
+                    and practical installation considerations.
+                </p>
+
+                <a
+                    class="card-link"
+                    href="/FORGE/resources/linux/"
+                >
+                    Explore Linux usage →
+                </a>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-header">
+
+            <h2>
+                What is FORGE?
+            </h2>
+
+            <p>
+                FORGE is a controlled word and password
+                candidate-generation engine designed around
+                repeatable generation workflows.
+            </p>
+
+        </div>
+
+
+        <div class="definition">
+
+            <article class="definition-main">
+
+                <h3>
+                    Controlled candidate generation
+                </h3>
+
+                <p>
+                    Instead of treating generation as one
+                    unrestricted operation, FORGE provides
+                    controls for how candidates are constructed,
+                    traversed and written.
+                </p>
+
+                <p>
+                    Depending on the selected workflow, users
+                    can work with smart generation, scrambled
+                    permutations and exhaustive generation.
+                    Generation limits and required candidate
+                    lengths can also be used to keep large
+                    workloads bounded.
+                </p>
+
+                <p>
+                    This makes FORGE useful for legitimate
+                    security testing, development, research,
+                    controlled experiments and other authorized
+                    workflows where candidate generation is
+                    required.
+                </p>
+
+            </article>
+
+
+            <aside class="definition-side">
+
+                <h3>
+                    Core capabilities
+                </h3>
+
+                <ul class="list">
+
+                    <li>
+                        Smart word generation
+                    </li>
+
+                    <li>
+                        Scrambled permutations
+                    </li>
+
+                    <li>
+                        Exhaustive generation
+                    </li>
+
+                    <li>
+                        Candidate-length control
+                    </li>
+
+                    <li>
+                        Generation limits
+                    </li>
+
+                    <li>
+                        Traversal strategies
+                    </li>
+
+                    <li>
+                        Resume and saved-state workflows
+                    </li>
+
+                </ul>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-header">
+
+            <h2>
+                Where FORGE fits.
+            </h2>
+
+            <p>
+                Candidate generation is one component of a
+                larger workflow. FORGE focuses on that component
+                rather than pretending to be an entire security
+                platform.
+            </p>
+
+        </div>
+
+
+        <div class="grid">
+
+            <article class="card">
+
+                <div class="card-label">
+                    Security
+                </div>
+
+                <h3>
+                    Authorized Testing
+                </h3>
+
+                <p>
+                    Generate controlled candidate sets for
+                    systems and environments where you have
+                    explicit permission to test.
+                </p>
+
+            </article>
+
+
+            <article class="card">
+
+                <div class="card-label">
+                    Research
+                </div>
+
+                <h3>
+                    Controlled Experiments
+                </h3>
+
+                <p>
+                    Build reproducible candidate-generation
+                    workloads for research, experimentation
+                    and analysis.
+                </p>
+
+            </article>
+
+
+            <article class="card">
+
+                <div class="card-label">
+                    Development
+                </div>
+
+                <h3>
+                    Workflow Automation
+                </h3>
+
+                <p>
+                    Integrate repeatable generation processes
+                    into development and testing workflows
+                    where controlled candidate sets are useful.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="cta">
+
+            <h2>
+                Ready to use FORGE?
+            </h2>
+
+            <p>
+                Start with the guide, download the current
+                release, or unlock the complete FORGE Pro
+                experience.
+            </p>
+
+            <div class="hero-actions">
+
+                <a
+                    class="button button-primary"
+                    href="/FORGE/guide/"
+                >
+                    Read the Guide
+                </a>
+
+                <a
+                    class="button"
+                    href="/FORGE/download/"
+                >
+                    Download
+                </a>
+
+                <a
+                    class="button"
+                    href="/FORGE/pricing/"
+                >
+                    Get FORGE Pro
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+```
+
+</main>
+
+<footer>
+
+```
+<div class="container footer-inner">
+
+    <div>
+        © 2026 FORGE. Created by Lord Ihura.
+        All rights reserved.
+    </div>
+
+    <div class="footer-links">
+
+        <a href="/FORGE/">
+            Home
+        </a>
+
+        <a href="/FORGE/guide/">
+            Guide
+        </a>
+
+        <a href="/FORGE/resources/">
+            Resources
+        </a>
+
+        <a href="/FORGE/pricing/">
+            Pricing
+        </a>
+
+        <a href="/FORGE/download/">
+            Download
+        </a>
+
+        <a href="/FORGE/about/">
+            About
+        </a>
+
+    </div>
+
+</div>
+```
+
+</footer>
+
+<script>
+"use strict";
+
+gtag("event", "view_resource", {
+    resource_category: "resources",
+    resource_name: "resources_index"
+});
+</script>
+
+</body>
+</html>
