@@ -1,7 +1,7 @@
 FORGE v1.0.0
 ============
 
-Copyright © 2026 LORD VINIE.
+Copyright © 2026 Lord Ihura.
 All rights reserved.
 
 FORGE, including its executable, documentation, and associated

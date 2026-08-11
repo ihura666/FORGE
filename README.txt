@@ -110,7 +110,7 @@ Status: Initial stable release
 COPYRIGHT
 ---------
 
-Copyright © 2026 LORD VINIE.
+Copyright © 2026 Lord Ihura.
 All rights reserved.
 
 See LICENSE.txt and COPYRIGHT.txt.
