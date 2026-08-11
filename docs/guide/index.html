@@ -1,24 +1,1046 @@
-<!-- Google Analytics -->
-<script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-2DLFCCZGSL"
-></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script>
-    window.dataLayer = window.dataLayer || [];
+    <title>FORGE Guide | Password & Word Generation</title>
 
-    function gtag() {
-        dataLayer.push(arguments);
-    }
+    <meta
+        name="description"
+        content="Learn what FORGE can do, how its generation modes work, how to begin, and how FORGE Pro expands controlled password and word generation workflows."
+    >
 
-    gtag("js", new Date());
+    <meta
+        name="keywords"
+        content="FORGE guide, password generation, word generation, password candidates, wordlists, security research, FORGE Pro"
+    >
 
-    gtag(
-        "config",
-        "G-2DLFCCZGSL",
-        {
-            anonymize_ip: true
+    <meta name="author" content="Lord Ihura">
+    <meta name="robots" content="index, follow">
+
+    <link
+        rel="canonical"
+        href="https://ihura666.github.io/FORGE/guide/"
+    >
+
+    <!-- Google Analytics -->
+    <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-2DLFCCZGSL"
+    ></script>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
         }
-    );
-</script>
-<!-- End Google Analytics -->
+
+        gtag("js", new Date());
+
+        gtag(
+            "config",
+            "G-2DLFCCZGSL",
+            {
+                anonymize_ip: true
+            }
+        );
+    </script>
+    <!-- End Google Analytics -->
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #050505;
+            color: #f1f1f1;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #1d1d1d;
+            background: rgba(5, 5, 5, 0.94);
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .brand {
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+        }
+
+        .brand span {
+            color: #888;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            list-style: none;
+            font-size: 0.92rem;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            transition:
+                color 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #fff;
+        }
+
+        .nav-pro {
+            padding: 9px 16px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff !important;
+        }
+
+        .nav-pro:hover {
+            border-color: #777;
+        }
+
+        .hero {
+            padding: 105px 0 85px;
+            text-align: center;
+            border-bottom: 1px solid #171717;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 22px;
+            padding: 7px 13px;
+            border: 1px solid #2d2d2d;
+            border-radius: 999px;
+            color: #999;
+            font-size: 0.78rem;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            max-width: 900px;
+            margin: 0 auto;
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 0.95;
+            letter-spacing: -0.055em;
+        }
+
+        .hero p {
+            max-width: 760px;
+            margin: 28px auto 0;
+            color: #999;
+            font-size: 1.08rem;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 34px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+            padding: 13px 22px;
+            border: 1px solid #333;
+            border-radius: 7px;
+            font-weight: 700;
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            border-color: #666;
+        }
+
+        .button-primary {
+            background: #f1f1f1;
+            color: #050505;
+            border-color: #f1f1f1;
+        }
+
+        .button-primary:hover {
+            background: #fff;
+        }
+
+        .section {
+            padding: 90px 0;
+            border-top: 1px solid #171717;
+        }
+
+        .section:first-of-type {
+            border-top: 0;
+        }
+
+        .section-header {
+            max-width: 760px;
+            margin-bottom: 45px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            letter-spacing: -0.035em;
+        }
+
+        .section-header p {
+            margin-top: 14px;
+            color: #888;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .card {
+            padding: 28px;
+            border: 1px solid #202020;
+            border-radius: 10px;
+            background: #090909;
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #333;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .card p {
+            color: #888;
+            font-size: 0.94rem;
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .workflow-card {
+            padding: 32px;
+            border: 1px solid #202020;
+            border-radius: 10px;
+            background: #090909;
+        }
+
+        .workflow-number {
+            display: inline-flex;
+            width: 38px;
+            height: 38px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            border: 1px solid #333;
+            border-radius: 50%;
+            color: #aaa;
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        .workflow-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.25rem;
+        }
+
+        .workflow-card p {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .mode {
+            padding: 30px;
+            border: 1px solid #202020;
+            border-radius: 10px;
+            background: #090909;
+        }
+
+        .mode h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .mode p {
+            color: #888;
+            font-size: 0.94rem;
+        }
+
+        .mode strong {
+            color: #ddd;
+        }
+
+        .checkpoint {
+            margin-top: 45px;
+            padding: 42px;
+            border: 1px solid #292929;
+            border-radius: 12px;
+            background: #080808;
+        }
+
+        .checkpoint h3 {
+            margin-bottom: 12px;
+            font-size: clamp(1.6rem, 4vw, 2.3rem);
+            letter-spacing: -0.03em;
+        }
+
+        .checkpoint p {
+            max-width: 760px;
+            color: #888;
+        }
+
+        .checklist {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .check {
+            padding: 20px;
+            border: 1px solid #202020;
+            border-radius: 9px;
+            background: #090909;
+        }
+
+        .check strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .check span {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .notice {
+            margin-top: 28px;
+            padding: 22px;
+            border-left: 2px solid #555;
+            background: #090909;
+            color: #999;
+        }
+
+        .cta {
+            padding: 70px 30px;
+            border: 1px solid #252525;
+            border-radius: 12px;
+            background: #090909;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            letter-spacing: -0.04em;
+        }
+
+        .cta p {
+            max-width: 680px;
+            margin: 16px auto 0;
+            color: #888;
+        }
+
+        footer {
+            padding: 35px 0;
+            border-top: 1px solid #171717;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        .copyright {
+            margin-top: 8px;
+            color: #444;
+            font-size: 0.78rem;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .workflow,
+            .mode-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .nav-inner {
+                min-height: auto;
+                padding: 16px 0;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .nav-links {
+                width: 100%;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+
+            .hero {
+                padding: 80px 0 70px;
+            }
+
+            .grid,
+            .workflow,
+            .mode-grid,
+            .checklist {
+                grid-template-columns: 1fr;
+            }
+
+            .checkpoint {
+                padding: 28px 22px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="container nav-inner">
+        <a href="/FORGE/" class="brand">
+            FORGE<span>.</span>
+        </a>
+
+        <ul class="nav-links">
+            <li>
+                <a href="/FORGE/">Home</a>
+            </li>
+
+            <li>
+                <a href="/FORGE/guide/" class="active">Guide</a>
+            </li>
+
+            <li>
+                <a href="/FORGE/resources/">Resources</a>
+            </li>
+
+            <li>
+                <a href="/FORGE/about/">About</a>
+            </li>
+
+            <li>
+                <a href="/FORGE/download/">Download</a>
+            </li>
+
+            <li>
+                <a href="/FORGE/pricing/" class="nav-pro">Get FORGE Pro</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+
+<section class="hero">
+    <div class="container">
+
+        <span class="eyebrow">FORGE v1.0.0</span>
+
+        <h1>
+            Learn the machine.
+        </h1>
+
+        <p>
+            A practical guide to understanding FORGE, its generation modes,
+            controlled candidate construction, traversal strategies,
+            output limits and resumable workflows.
+        </p>
+
+        <div class="actions">
+            <a
+                href="/FORGE/download/"
+                class="button button-primary"
+            >
+                Download FORGE
+            </a>
+
+            <a
+                href="/FORGE/resources/"
+                class="button"
+            >
+                Explore Resources
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <h2>
+                What is FORGE?
+            </h2>
+
+            <p>
+                FORGE is a word and password generation engine designed
+                around controlled candidate generation rather than
+                uncontrolled guessing.
+            </p>
+        </div>
+
+        <div class="grid">
+
+            <article class="card">
+                <h3>Controlled Generation</h3>
+                <p>
+                    Define the words, numbers, symbols, lengths and
+                    generation rules that shape the candidate space.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Multiple Strategies</h3>
+                <p>
+                    Select different generation modes and traversal
+                    strategies depending on the structure of the
+                    candidate space.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Candidate Limits</h3>
+                <p>
+                    Set generation limits so large searches can be
+                    controlled instead of allowing an unrestricted
+                    combination explosion.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Exact Lengths</h3>
+                <p>
+                    Restrict generated candidates to a required length
+                    when the workflow demands exact-size candidates.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Existing Wordlists</h3>
+                <p>
+                    Load previous output and avoid unnecessarily
+                    rebuilding candidates that have already been
+                    generated.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Resume Support</h3>
+                <p>
+                    Continue longer generation workflows from saved
+                    state instead of restarting the entire process.
+                </p>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <h2>
+                How the workflow works.
+            </h2>
+
+            <p>
+                The basic FORGE workflow is deliberately structured.
+                Each stage controls what enters the candidate space
+                and how that space is traversed.
+            </p>
+        </div>
+
+        <div class="workflow">
+
+            <article class="workflow-card">
+                <span class="workflow-number">01</span>
+
+                <h3>Define the inputs</h3>
+
+                <p>
+                    Provide the keywords, numerical values and symbols
+                    that should participate in candidate construction.
+                </p>
+            </article>
+
+            <article class="workflow-card">
+                <span class="workflow-number">02</span>
+
+                <h3>Choose the generation mode</h3>
+
+                <p>
+                    Select Smart, Scrambled or Both depending on whether
+                    you want structured word construction, permutations,
+                    or a combination of approaches.
+                </p>
+            </article>
+
+            <article class="workflow-card">
+                <span class="workflow-number">03</span>
+
+                <h3>Control the search</h3>
+
+                <p>
+                    Configure candidate limits, required length,
+                    traversal strategy and other generation constraints
+                    before the engine begins producing output.
+                </p>
+            </article>
+
+            <article class="workflow-card">
+                <span class="workflow-number">04</span>
+
+                <h3>Generate and save</h3>
+
+                <p>
+                    FORGE produces candidates according to the selected
+                    rules and writes the resulting wordlist to the
+                    configured output file.
+                </p>
+            </article>
+
+            <article class="workflow-card">
+                <span class="workflow-number">05</span>
+
+                <h3>Resume when necessary</h3>
+
+                <p>
+                    Long-running workflows can use saved state so the
+                    process can continue without rebuilding the same
+                    search from the beginning.
+                </p>
+            </article>
+
+            <article class="workflow-card">
+                <span class="workflow-number">06</span>
+
+                <h3>Inspect the result</h3>
+
+                <p>
+                    Treat the generated wordlist as an explicit,
+                    inspectable representation of the candidate space
+                    you configured.
+                </p>
+            </article>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <h2>
+                Generation modes.
+            </h2>
+
+            <p>
+                Different modes produce different structures. The
+                correct choice depends on what you are trying to model
+                or examine.
+            </p>
+        </div>
+
+        <div class="mode-grid">
+
+            <article class="mode">
+                <h3>Smart Generation</h3>
+
+                <p>
+                    <strong>Purpose:</strong>
+                    prioritize English-like word construction and
+                    controlled variations.
+                </p>
+            </article>
+
+            <article class="mode">
+                <h3>Scrambled Generation</h3>
+
+                <p>
+                    <strong>Purpose:</strong>
+                    explore rearranged structures and permutations when
+                    the order of components matters.
+                </p>
+            </article>
+
+            <article class="mode">
+                <h3>Both</h3>
+
+                <p>
+                    <strong>Purpose:</strong>
+                    combine Smart and Scrambled approaches when broader
+                    candidate exploration is required.
+                </p>
+            </article>
+
+            <article class="mode">
+                <h3>Exhaustive</h3>
+
+                <p>
+                    <strong>Purpose:</strong>
+                    explore controlled combinations across the available
+                    input space while respecting the configured limits.
+                </p>
+            </article>
+
+        </div>
+
+        <div class="checkpoint">
+
+            <h3>
+                The important distinction.
+            </h3>
+
+            <p>
+                Generation mode determines how candidates are constructed.
+                Traversal determines the order in which the available
+                candidate space is explored. They are related, but they
+                are not the same control.
+            </p>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <h2>
+                Traversal strategies.
+            </h2>
+
+            <p>
+                FORGE can organize candidate exploration using different
+                traversal strategies. The strategy affects ordering,
+                not the underlying meaning of the generated candidates.
+            </p>
+        </div>
+
+        <div class="grid">
+
+            <article class="card">
+                <h3>Sequential</h3>
+
+                <p>
+                    Process candidates in their natural generation order.
+                    Useful when deterministic progression matters.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Priority</h3>
+
+                <p>
+                    Process candidates according to the priority structure
+                    defined by the generation workflow.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Rotation</h3>
+
+                <p>
+                    Rotate the ordering of candidate components to expose
+                    different structural arrangements.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Alphabetical</h3>
+
+                <p>
+                    Organize candidates alphabetically for predictable
+                    inspection and easier output analysis.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Random</h3>
+
+                <p>
+                    Explore candidates in a randomized order when a
+                    deterministic sequence is not required.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Controlled Exploration</h3>
+
+                <p>
+                    Combine traversal choice with candidate limits and
+                    exact-length requirements to keep large searches
+                    manageable.
+                </p>
+            </article>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <h2>
+                Before you generate.
+            </h2>
+
+            <p>
+                Large candidate spaces grow quickly. A disciplined
+                configuration prevents a useful experiment from becoming
+                an unnecessarily enormous computation.
+            </p>
+        </div>
+
+        <div class="checklist">
+
+            <div class="check">
+                <strong>Set a candidate limit</strong>
+                <span>
+                    Prevent unrestricted generation from consuming
+                    excessive time or storage.
+                </span>
+            </div>
+
+            <div class="check">
+                <strong>Set the required length</strong>
+                <span>
+                    Generate only candidates that match the length
+                    required by your workflow.
+                </span>
+            </div>
+
+            <div class="check">
+                <strong>Review your inputs</strong>
+                <span>
+                    Every keyword, number and symbol can multiply the
+                    size of the candidate space.
+                </span>
+            </div>
+
+            <div class="check">
+                <strong>Choose traversal deliberately</strong>
+                <span>
+                    Ordering can affect which candidates are reached
+                    first during a limited run.
+                </span>
+            </div>
+
+            <div class="check">
+                <strong>Reuse existing output</strong>
+                <span>
+                    Load previous wordlists when continuing a generation
+                    workflow rather than unnecessarily recreating output.
+                </span>
+            </div>
+
+            <div class="check">
+                <strong>Keep saved state</strong>
+                <span>
+                    Long-running jobs are easier to continue when their
+                    progress state is preserved.
+                </span>
+            </div>
+
+        </div>
+
+        <div class="notice">
+            Use FORGE only for systems, accounts, datasets and security
+            testing environments that you are authorized to examine.
+            FORGE is a generation engine. It does not turn unauthorized
+            access into authorized access.
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="cta">
+
+            <h2>
+                Ready to use FORGE?
+            </h2>
+
+            <p>
+                Start with the public Linux release, explore the supporting
+                resources, or unlock the complete FORGE Pro experience.
+            </p>
+
+            <div class="actions">
+
+                <a
+                    href="/FORGE/download/"
+                    class="button button-primary"
+                >
+                    Download FORGE
+                </a>
+
+                <a
+                    href="/FORGE/pricing/"
+                    class="button"
+                >
+                    Get FORGE Pro
+                </a>
+
+                <a
+                    href="/FORGE/resources/"
+                    class="button"
+                >
+                    Explore Resources
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <div class="container">
+
+        <div class="footer-inner">
+
+            <div>
+                <div>
+                    FORGE
+                </div>
+
+                <div class="copyright">
+                    © 2026 FORGE. All rights reserved.
+                    Created by Lord Ihura.
+                </div>
+            </div>
+
+            <div class="footer-links">
+
+                <a href="/FORGE/">Home</a>
+
+                <a
+                    href="/FORGE/guide/"
+                    class="active"
+                >
+                    Guide
+                </a>
+
+                <a href="/FORGE/resources/">
+                    Resources
+                </a>
+
+                <a href="/FORGE/about/">
+                    About
+                </a>
+
+                <a href="/FORGE/pricing/">
+                    Pricing
+                </a>
+
+                <a href="/FORGE/download/">
+                    Download
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+</footer>
+
+</body>
+</html>
