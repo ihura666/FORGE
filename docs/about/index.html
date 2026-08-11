@@ -205,7 +205,67 @@
                 grid-template-columns: 1fr;
             }
         }
-    </style>
+
+/* Mobile rendering safety */
+html {
+    width: 100%;
+    min-width: 0;
+}
+
+body {
+    width: 100%;
+    min-width: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+.container {
+    width: min(1120px, calc(100% - 32px));
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 760px) {
+    html,
+    body {
+        width: 100%;
+        min-width: 0;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .container {
+        width: calc(100% - 28px);
+        max-width: none;
+    }
+
+    nav,
+    main,
+    footer {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+}
+
+</style>
 </head>
 
 <body>
