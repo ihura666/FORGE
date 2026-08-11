@@ -1,24 +1,783 @@
-<!-- Google Analytics -->
-<script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-2DLFCCZGSL"
-></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#050505"
+    >
+
+    <meta
+        name="description"
+        content="FORGE Pro pricing and purchase. Unlock the complete FORGE Pro release with controlled password and word candidate generation."
+    >
+
+    <meta
+        name="keywords"
+        content="FORGE Pro, FORGE pricing, password generator, word generator, candidate generation, security testing, Lord Ihura"
+    >
+
+    <meta
+        name="author"
+        content="Lord Ihura"
+    >
+
+    <meta
+        name="robots"
+        content="index, follow"
+    >
+
+    <link
+        rel="canonical"
+        href="https://ihura666.github.io/FORGE/pricing/"
+    >
+
+    <!-- Google Analytics -->
+    <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-2DLFCCZGSL"
+    ></script>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag("js", new Date());
+
+        gtag("config", "G-2DLFCCZGSL", {
+            anonymize_ip: true
+        });
+    </script>
+    <!-- End Google Analytics -->
+
+    <title>FORGE Pro | Pricing</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #050505;
+            color: #f4f4f4;
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 72px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 34px;
+
+            background: rgba(5, 5, 5, 0.95);
+            border-bottom: 1px solid #202020;
+
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            z-index: 1000;
+        }
+
+        .brand {
+            text-decoration: none;
+            font-weight: 900;
+            letter-spacing: 5px;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .nav-links .active {
+            color: #fff;
+        }
+
+        .nav-button {
+            padding: 9px 14px;
+            border: 1px solid #333;
+            border-radius: 7px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 0;
+            border-radius: 8px;
+
+            padding: 13px 22px;
+
+            background: #f2f2f2;
+            color: #050505;
+
+            font-size: 14px;
+            font-weight: 800;
+
+            cursor: pointer;
+            text-decoration: none;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease,
+                opacity 0.2s ease;
+        }
+
+        .button:hover {
+            background: #fff;
+            transform: translateY(-1px);
+        }
+
+        .button:disabled {
+            cursor: wait;
+            opacity: 0.55;
+            transform: none;
+        }
+
+        main {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 120px 24px 70px;
+        }
+
+        .pricing {
+            width: 100%;
+            max-width: 1050px;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .heading span {
+            color: #666;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .heading h1 {
+            margin: 16px 0 12px;
+            font-size: clamp(42px, 7vw, 72px);
+            line-height: 1;
+            letter-spacing: -0.045em;
+        }
+
+        .heading p {
+            max-width: 600px;
+            margin: auto;
+            color: #777;
+            line-height: 1.7;
+        }
+
+        .card {
+            max-width: 520px;
+            margin: auto;
+
+            padding: 42px;
+
+            border: 1px solid #333;
+            border-radius: 18px;
+
+            background: #0a0a0a;
+
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.35);
+        }
+
+        .plan {
+            color: #777;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .price {
+            margin: 14px 0 5px;
+
+            font-size: 60px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.04em;
+        }
+
+        .currency {
+            color: #888;
+            font-size: 15px;
+        }
+
+        .description {
+            margin:
+                25px 0
+                30px;
+
+            color: #777;
+            line-height: 1.7;
+        }
+
+        ul {
+            padding: 0;
+            margin: 0 0 30px;
+            list-style: none;
+        }
+
+        li {
+            padding: 12px 0;
+
+            border-bottom: 1px solid #181818;
+
+            color: #bbb;
+            line-height: 1.5;
+        }
+
+        li::before {
+            content: "✓";
+            margin-right: 12px;
+            color: #888;
+        }
+
+        .checkout-form {
+            margin-top: 10px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+
+            color: #888;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .field input {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #292929;
+            border-radius: 7px;
+
+            background: #050505;
+            color: #fff;
+
+            font: inherit;
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .field input::placeholder {
+            color: #555;
+        }
+
+        .field input:focus {
+            border-color: #555;
+
+            box-shadow:
+                0 0 0 3px rgba(255, 255, 255, 0.04);
+        }
+
+        .purchase {
+            width: 100%;
+            margin-top: 2px;
+        }
+
+        .status {
+            min-height: 24px;
+            margin-top: 18px;
+
+            color: #888;
+
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .status.error {
+            color: #d8d8d8;
+        }
+
+        footer {
+            padding: 30px;
+
+            border-top: 1px solid #181818;
+
+            color: #555;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .footer-main {
+            margin-bottom: 7px;
+        }
+
+        .footer-author {
+            color: #444;
+        }
+
+        @media (max-width: 700px) {
+            .nav {
+                height: auto;
+                min-height: 64px;
+                padding: 14px 18px;
+
+                align-items: center;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a:not(.nav-button) {
+                display: none;
+            }
+
+            .nav-button {
+                padding: 8px 12px;
+            }
+
+            main {
+                padding:
+                    105px
+                    16px
+                    55px;
+            }
+
+            .heading {
+                margin-bottom: 32px;
+            }
+
+            .heading h1 {
+                font-size: clamp(40px, 13vw, 58px);
+            }
+
+            .heading p {
+                font-size: 14px;
+            }
+
+            .card {
+                padding: 28px 22px;
+                border-radius: 14px;
+            }
+
+            .price {
+                font-size: 48px;
+            }
+
+            footer {
+                padding:
+                    25px
+                    18px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .brand {
+                font-size: 14px;
+                letter-spacing: 3px;
+            }
+
+            .nav-button {
+                font-size: 12px;
+            }
+
+            .card {
+                padding: 24px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="nav">
+
+    <a
+        class="brand"
+        href="/FORGE/"
+        aria-label="FORGE home"
+    >
+        FORGE
+    </a>
+
+    <div class="nav-links">
+
+        <a href="/FORGE/">
+            Home
+        </a>
+
+        <a href="/FORGE/download/">
+            Download
+        </a>
+
+        <a
+            class="nav-button active"
+            href="/FORGE/pricing/"
+        >
+            Pro
+        </a>
+
+    </div>
+
+</nav>
+
+<main>
+
+    <section
+        class="pricing"
+        aria-labelledby="pricing-title"
+    >
+
+        <div class="heading">
+
+            <span>
+                Commercial License
+            </span>
+
+            <h1 id="pricing-title">
+                FORGE Pro
+            </h1>
+
+            <p>
+                One professional license for the complete
+                FORGE Pro release, built for controlled,
+                repeatable and high-volume candidate generation.
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <div class="plan">
+                FORGE PRO
+            </div>
+
+            <div class="price">
+                KES 4,000
+            </div>
+
+            <div class="currency">
+                One-time purchase
+            </div>
+
+            <p class="description">
+                Purchase your FORGE Pro license securely through
+                Paystack. After successful payment, your purchase
+                is processed automatically.
+            </p>
+
+            <ul>
+
+                <li>
+                    Full FORGE Pro release
+                </li>
+
+                <li>
+                    License activation
+                </li>
+
+                <li>
+                    Up to 2 machines
+                </li>
+
+                <li>
+                    Controlled candidate generation
+                </li>
+
+                <li>
+                    Smart, scrambled and exhaustive modes
+                </li>
+
+                <li>
+                    Configurable generation limits
+                </li>
+
+            </ul>
+
+            <form
+                id="checkoutForm"
+                class="checkout-form"
+                novalidate
+            >
+
+                <div class="field">
+
+                    <label for="name">
+                        Name
+                    </label>
+
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        autocomplete="name"
+                        placeholder="Your name"
+                        required
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        autocomplete="email"
+                        placeholder="you@example.com"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    class="button purchase"
+                    type="submit"
+                    id="purchaseButton"
+                >
+                    Purchase FORGE Pro
+                </button>
+
+            </form>
+
+            <div
+                class="status"
+                id="status"
+                role="status"
+                aria-live="polite"
+            ></div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+
+    <div class="footer-main">
+        FORGE © 2026. All rights reserved.
+    </div>
+
+    <div class="footer-author">
+        Created by Lord Ihura.
+    </div>
+
+</footer>
 
 <script>
-    window.dataLayer = window.dataLayer || [];
+"use strict";
 
-    function gtag() {
-        dataLayer.push(arguments);
+const API_BASE =
+    "https://forge-9u47.onrender.com";
+
+const form =
+    document.getElementById("checkoutForm");
+
+const button =
+    document.getElementById("purchaseButton");
+
+const status =
+    document.getElementById("status");
+
+const nameInput =
+    document.getElementById("name");
+
+const emailInput =
+    document.getElementById("email");
+
+
+function setStatus(message, isError = false) {
+    status.textContent = message;
+    status.classList.toggle("error", isError);
+}
+
+
+function setLoading(isLoading) {
+    button.disabled = isLoading;
+
+    button.textContent = isLoading
+        ? "Creating secure checkout..."
+        : "Purchase FORGE Pro";
+}
+
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+
+form.addEventListener("submit", async event => {
+
+    event.preventDefault();
+
+    const name =
+        nameInput.value.trim();
+
+    const email =
+        emailInput.value.trim();
+
+    setStatus("");
+
+    if (!name) {
+        setStatus(
+            "Please enter your name.",
+            true
+        );
+
+        nameInput.focus();
+
+        return;
     }
 
-    gtag("js", new Date());
+    if (!email || !isValidEmail(email)) {
+        setStatus(
+            "Please enter a valid email address.",
+            true
+        );
 
-    gtag(
-        "config",
-        "G-2DLFCCZGSL",
-        {
-            anonymize_ip: true
+        emailInput.focus();
+
+        return;
+    }
+
+    setLoading(true);
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE + "/checkout/create",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            name,
+                            email
+                        })
+                }
+            );
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error(
+                "The payment server returned an invalid response."
+            );
         }
-    );
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ||
+                "Unable to create checkout."
+            );
+        }
+
+        if (!data.authorization_url) {
+            throw new Error(
+                "Paystack checkout URL was not returned."
+            );
+        }
+
+        window.location.assign(
+            data.authorization_url
+        );
+
+    } catch (error) {
+
+        console.error(
+            "FORGE checkout error:",
+            error
+        );
+
+        setStatus(
+            error instanceof Error
+                ? error.message
+                : "Unable to start payment. Please try again.",
+            true
+        );
+
+        setLoading(false);
+    }
+
+});
 </script>
-<!-- End Google Analytics -->
+
+</body>
+</html>
