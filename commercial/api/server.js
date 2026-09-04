@@ -58,7 +58,7 @@ const PLAN =
     process.env.FORGE_PLAN || "pro";
 
 const PRICE = Number(
-    process.env.FORGE_PRICE || 4000
+    process.env.FORGE_PRICE || 200
 );
 
 const CURRENCY = String(
