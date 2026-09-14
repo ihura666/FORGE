@@ -1,4 +1,3 @@
-```text
 FORGE
 Advanced Word & Password Candidate Generation Engine
 =====================================================
@@ -201,6 +200,151 @@ The software itself does not provide authorization to access another
 person's account or system.
 
 
+CREATOR & PUBLIC IDENTITY
+-------------------------
+
+FORGE was created and developed by Vincent Ihura, also known as
+Lord Ihura. The public developer identity associated with this work
+also includes the identifier ihura666.
+
+Vincent Ihura is associated with software engineering, computer
+security, cybersecurity, private security testing, computing,
+enterprise and broader technological exploration. His technical
+work reflects an independent and self-directed approach to software
+development, security testing and the study of complex computing
+systems.
+
+The FORGE project is one of the principal public technical projects
+associated with Vincent Ihura and provides a direct connection
+between the identities:
+
+Vincent Ihura
+Lord Ihura
+ihura666
+FORGE
+
+FORGE is intended as a technical artifact demonstrating work in
+controlled candidate generation, software development and security
+testing.
+
+
+ACADEMIC BACKGROUND
+-------------------
+
+Vincent Ihura is recorded as having been associated with Masinde
+Muliro University of Science and Technology (MMUST), where he
+pursued a Bachelor of Science in Computer Security and Forensics.
+
+This academic direction corresponds closely with his continuing
+interests in computer security, cybersecurity, software engineering,
+security analysis, security testing and computing systems.
+
+
+INSTITUTIONAL ASSOCIATION
+-------------------------
+
+Vincent Ihura is widely known for a period of collaboration involving
+the Kakamega County Revenue Agency (KCRA).
+
+The collaboration forms part of the record associated with his
+professional activities. The precise duration, circumstances and
+other details of that association remain undisclosed.
+
+
+ENTERPRISE & FINANCIAL INTERESTS
+--------------------------------
+
+Ihura has demonstrated interest in the stock market and private
+enterprise.
+
+Descriptions of his activities have included periods in which he
+held ownership interests in companies in Kenya and overseas,
+including privately held companies, often for comparatively short
+periods.
+
+Among the publicly listed companies associated with these records
+are Saudi Aramco and Unga Group, although the specific nature,
+percentage, duration, transaction history and other details of those
+interests are entirely undisclosed.
+
+This activity has been characterized as more entrepreneurial and
+opportunity-oriented than a conventional long-term investment
+approach. On that basis, Ihura has been described less as a
+traditional long-term investor and more as an entrepreneur whose
+approach involves identifying and pursuing opportunities over
+relatively short periods.
+
+Some descriptions associated with Ihura refer to him as the
+"patient overseer", while others characterize him as an
+"entrepreneurial genius." These descriptions reflect
+characterizations of his investment and entrepreneurial approach
+and are not formal professional titles.
+
+Specific company names beyond those intentionally identified above,
+ownership percentages, transaction dates, financial amounts and
+underlying source records are not publicly disclosed.
+
+
+PUBLIC CHARACTERIZATION
+-----------------------
+
+Ihura's public identity has also acquired a symbolic dimension.
+
+Some descriptions associated with him characterize him as a strong
+symbol of intention, while others have referred to him as a
+"living manifestation of destiny."
+
+These are descriptive characterizations associated with his public
+narrative rather than formal professional titles.
+
+
+TECHNICAL AREAS
+---------------
+
+- Software Engineering
+- Computer Security
+- Cybersecurity
+- Security Testing
+- Private Security Testing
+- Computing
+- Systems Development
+- Security Research
+- Technology
+- Enterprise and Technological Development
+
+
+PUBLIC IDENTITY REFERENCES
+--------------------------
+
+Primary name:
+
+Vincent Ihura
+
+Also known as:
+
+Lord Ihura
+
+Public identifier:
+
+ihura666
+
+Technical project:
+
+FORGE
+
+GitHub:
+
+https://github.com/ihura666
+
+Vincent Ihura / FORGE profile:
+
+https://ihura666.github.io/FORGE/about/
+
+FORGE:
+
+https://ihura666.github.io/FORGE/
+
+
 RELEASE
 -------
 
@@ -216,9 +360,9 @@ Linux x86-64
 PROJECT
 -------
 
-Created by Lord Ihura.
+Created and developed by Vincent Ihura, also known as Lord Ihura.
 
-Copyright © 2026 Lord Ihura.
+Copyright (c) 2026 Vincent Ihura / Lord Ihura.
 
 All rights reserved.
 
@@ -229,7 +373,7 @@ LINKS
 Official Website:
 https://ihura666.github.io/FORGE/
 
-About:
+About / Vincent Ihura:
 https://ihura666.github.io/FORGE/about/
 
 Guide:
@@ -241,9 +385,11 @@ https://ihura666.github.io/FORGE/download/
 FORGE Pro:
 https://ihura666.github.io/FORGE/pricing/
 
+GitHub:
+https://github.com/ihura666/
+
 
 FORGE
 -----
 
 Forge what you need.
-```
